@@ -4,11 +4,11 @@ import bcrypt from 'bcrypt';
 import { PostgresCreateUserRepository } from '../repositories/postgres-db/create-user.js';
 
 export class CreateUserUseCase {
-    async execut(createUserParams) {
+    async execute(createUserParams) {
         // TODO: verificar se o e-mail já está em uso
 
         const userId = uuidv4();
-        const hashedPassword = await bcrypt.hash(createUserParams, 10);
+        const hashedPassword = await bcrypt.hash(createUserParams.password, 10);
 
         const user = {
             ...createUserParams,
