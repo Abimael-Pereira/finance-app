@@ -1,12 +1,11 @@
 import { notFound, ok, serverError } from './helpers/http.js';
 import { GetUserByIdUseCase } from '../use-cases/get-user-by-id.js';
-import validator from 'validator';
-import { invalidIdResponse } from './helpers/user.js';
+import { checkIfPasswordIsValid, invalidIdResponse } from './helpers/user.js';
 
 export class GetUserByIdController {
     async execute(httpRequest) {
         try {
-            const isIdValid = validator.isUUID(httpRequest.params.userid);
+            const isIdValid = checkIfPasswordIsValid(httpRequest.params.userid);
             if (!isIdValid) {
                 return invalidIdResponse();
             }
