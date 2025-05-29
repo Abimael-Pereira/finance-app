@@ -28,7 +28,11 @@ export const makeGetUserByIdController = () => {
 
 export const makeCreateUserController = () => {
     const createUserRepository = new PostgresCreateUserRepository();
-    const createUserUseCase = new CreateUserUseCase(createUserRepository);
+    const getUserByEmailRepository = new PostgresGetUserByEmailRepository();
+    const createUserUseCase = new CreateUserUseCase(
+        createUserRepository,
+        getUserByEmailRepository,
+    );
     const createUserController = new CreateUserController(createUserUseCase);
 
     return createUserController;
