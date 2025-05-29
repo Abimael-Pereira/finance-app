@@ -17,7 +17,6 @@ export class CreateTransactionController {
             const params = httpRequest.body;
 
             const requiredFields = [
-                'id',
                 'user_id',
                 'name',
                 'date',
@@ -26,7 +25,10 @@ export class CreateTransactionController {
             ];
 
             for (const field of requiredFields) {
-                if (!params[field] || params[field].trim().length === 0) {
+                if (
+                    !params[field] ||
+                    params[field].toString().trim().length === 0
+                ) {
                     return badRequest({ message: `Missing param: ${field}` });
                 }
             }
@@ -45,7 +47,7 @@ export class CreateTransactionController {
             const amountIsValid = validator.isCurrency(
                 params.amount.toString(),
                 {
-                    digits_after_decimal: [2],
+                    digits_after_decimal: [1, 2],
                     allow_negatives: false,
                 },
             );
@@ -66,7 +68,7 @@ export class CreateTransactionController {
                 });
             }
 
-            const transaction = this.createTransactionUseCase.execute({
+            const transaction = await this.createTransactionUseCase.execute({
                 ...params,
                 type,
             });
