@@ -10,7 +10,7 @@ const execMigrations = async () => {
     const client = await pool.connect();
 
     try {
-        const filePath = path.join(__dirname, '01-init.sql');
+        const filePath = path.join(__dirname, '02-fix-column-name.sql');
         const script = fs.readFileSync(filePath, 'utf-8');
         await client.query(script);
 
