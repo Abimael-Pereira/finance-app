@@ -21,7 +21,7 @@ export class GetUserBalanceController {
                 return invalidIdResponse();
             }
 
-            const balance = this.getUserBalanceUseCase.execute(
+            const balance = await this.getUserBalanceUseCase.execute(
                 httpRequest.params,
             );
 
