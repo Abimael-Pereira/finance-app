@@ -2,3 +2,4 @@ node_modules
 postgres-data
 .env
 funcionalidades.txt
+/src/generated/prisma
