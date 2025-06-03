@@ -44,4 +44,12 @@ export const createUserSchema = z.object({
 
 export const updateUserSchema = createUserSchema
     .partial()
-    .strict({ message: 'Invalid fields provided.' });
+    .strict({ message: 'Invalid fields provided.' })
+    .refine(
+        (data) => {
+            return Object.keys(data).some((value) => value !== undefined);
+        },
+        {
+            message: 'At least one field must be provided for update.',
+        },
+    );
