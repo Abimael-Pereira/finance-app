@@ -1,9 +1,9 @@
 import {
     ok,
     serverError,
-    checkIfPasswordIsValid,
     invalidIdResponse,
     userNotFoundResponse,
+    checkIfIdIsValid,
 } from '../helpers/index.js';
 
 export class GetUserByIdController {
@@ -12,7 +12,7 @@ export class GetUserByIdController {
     }
     async execute(httpRequest) {
         try {
-            const isIdValid = checkIfPasswordIsValid(httpRequest.params.userid);
+            const isIdValid = checkIfIdIsValid(httpRequest.params.userid);
             if (!isIdValid) {
                 return invalidIdResponse();
             }
