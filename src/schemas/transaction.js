@@ -37,3 +37,20 @@ export const createTransactionSchema = z.object({
             }),
         ),
 });
+
+export const updateTransactionSchema = createTransactionSchema
+    .omit({
+        user_id: true,
+    })
+    .partial()
+    .strict({
+        message: 'Invalid fields provided.',
+    })
+    .refine(
+        (data) => {
+            return Object.keys(data).some((value) => value !== undefined);
+        },
+        {
+            message: 'At least one field must be provided for update.',
+        },
+    );
