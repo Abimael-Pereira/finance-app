@@ -2,7 +2,7 @@ import validator from 'validator';
 import { z } from 'zod';
 
 export const createTransactionSchema = z.object({
-    user_id: z.string().uuid({
+    userId: z.string().uuid({
         message: 'User ID must be a valid UUID',
         invalid_type_error: 'User ID must be a string',
         required_error: 'User ID is required',
