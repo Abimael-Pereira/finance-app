@@ -1,12 +1,11 @@
-import { PostgresHelper } from '../../../db/postgres-db/helper.js';
+import { prisma } from '../../../../prisma/prisma.js';
 
 export class PostgresGetTransactionsByUserIdRepository {
-    execute(userId) {
-        const transactions = PostgresHelper.query(
-            'SELECT * FROM transactions WHERE user_id = $1',
-            [userId],
-        );
-
-        return transactions;
+    async execute(userId) {
+        return await prisma.transaction.findMany({
+            where: {
+                userId,
+            },
+        });
     }
 }
