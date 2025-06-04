@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { CreateUserController } from './create-user';
 
 describe('Create User Controller', () => {
@@ -15,10 +16,12 @@ describe('Create User Controller', () => {
         );
         const httpRequest = {
             body: {
-                first_name: 'Abimael',
-                last_name: 'Pereira',
-                email: 'abimael@gmail.com',
-                password: 'asdqwse123',
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             },
         };
 
@@ -40,9 +43,11 @@ describe('Create User Controller', () => {
 
         const httpRequest = {
             body: {
-                last_name: 'Pereira',
-                email: 'abimael@gmail.com',
-                password: 'asdqwse123',
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             },
         };
 
@@ -59,9 +64,11 @@ describe('Create User Controller', () => {
 
         const httpRequest = {
             body: {
-                first_name: 'Pereira',
-                email: 'abimael@gmail.com',
-                password: 'asdqwse123',
+                first_name: faker.person.firstName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             },
         };
 
@@ -78,9 +85,11 @@ describe('Create User Controller', () => {
 
         const httpRequest = {
             body: {
-                first_name: 'Abimael',
-                last_name: 'Pereira',
-                password: 'asdqwse123',
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             },
         };
 
@@ -97,9 +106,9 @@ describe('Create User Controller', () => {
 
         const httpRequest = {
             body: {
-                first_name: 'Abimael',
-                last_name: 'Pereira',
-                email: 'abimael@gmail.com',
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
             },
         };
 
@@ -116,10 +125,12 @@ describe('Create User Controller', () => {
 
         const httpRequest = {
             body: {
-                first_name: 'Abimael',
-                last_name: 'Pereira',
-                email: 'abimael.com',
-                password: 'asdqwse123',
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: 'invalidEmail.com',
+                password: faker.internet.password({
+                    length: 6,
+                }),
             },
         };
 
@@ -135,10 +146,12 @@ describe('Create User Controller', () => {
         );
         const httpRequest = {
             body: {
-                first_name: 'Abimael',
-                last_name: 'Pereira',
-                email: 'abimael@gmail.com',
-                password: 'teste',
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 4,
+                }),
             },
         };
 
@@ -155,10 +168,12 @@ describe('Create User Controller', () => {
 
         const httpRequest = {
             body: {
-                first_name: 'Abimael',
-                last_name: 'Pereira',
-                email: 'abimael@gmail.com',
-                password: 'teste12345',
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             },
         };
 
