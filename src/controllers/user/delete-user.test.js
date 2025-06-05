@@ -38,4 +38,14 @@ describe('DeleteUserController', () => {
 
         expect(result.statusCode).toBe(200);
     });
+
+    it('should return 400 if id is invalid', async () => {
+        const { deleteUserController } = makeSut();
+
+        const result = await deleteUserController.execute({
+            params: { userid: 'invalid_id' },
+        });
+
+        expect(result.statusCode).toBe(400);
+    });
 });
