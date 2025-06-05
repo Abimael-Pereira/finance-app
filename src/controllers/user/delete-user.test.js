@@ -1,0 +1,41 @@
+import { faker } from '@faker-js/faker';
+import { DeleteUserController } from './delete-user';
+
+describe('DeleteUserController', () => {
+    class DeleteUserUseCaseStub {
+        execute() {
+            return {
+                id: faker.string.uuid(),
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
+            };
+        }
+    }
+
+    const makeSut = () => {
+        const deleteUserUseCase = new DeleteUserUseCaseStub();
+        const deleteUserController = new DeleteUserController(
+            deleteUserUseCase,
+        );
+
+        return { deleteUserController };
+    };
+
+    const httpRequest = {
+        params: {
+            userid: faker.string.uuid(),
+        },
+    };
+
+    it('Should return 200 if user is deleted', async () => {
+        const { deleteUserController } = makeSut();
+
+        const result = await deleteUserController.execute(httpRequest);
+
+        expect(result.statusCode).toBe(200);
+    });
+});
