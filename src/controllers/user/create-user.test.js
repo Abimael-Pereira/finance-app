@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { CreateUserController } from './create-user';
+import { EmailAlreadyInUseError } from '../../errors/user';
+import { ZodError } from 'zod';
 
 describe('Create User Controller', () => {
     class CreateUserUseCaseStub {
@@ -208,5 +210,61 @@ describe('Create User Controller', () => {
         const result = await createUserController.execute(httpRequest);
 
         expect(result.statusCode).toBe(500);
+    });
+
+    it('should return 400 if CreateUserUseCase throws an EmailAlreadyInUseError', async () => {
+        const createUserUseCase = new CreateUserUseCaseStub();
+        const createUserController = new CreateUserController(
+            createUserUseCase,
+        );
+        const httpRequest = {
+            body: {
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
+            },
+        };
+
+        jest.spyOn(createUserUseCase, 'execute').mockImplementationOnce(() => {
+            throw new EmailAlreadyInUseError(httpRequest.body.email);
+        });
+
+        const result = await createUserController.execute(httpRequest);
+
+        expect(result.statusCode).toBe(400);
+    });
+
+    it('should return 400 if CreateUserUseCase throws a ZodError', async () => {
+        const createUserUseCase = new CreateUserUseCaseStub();
+        const createUserController = new CreateUserController(
+            createUserUseCase,
+        );
+        const httpRequest = {
+            body: {
+                first_name: faker.person.firstName(),
+                last_name: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
+            },
+        };
+
+        jest.spyOn(createUserUseCase, 'execute').mockImplementationOnce(() => {
+            throw new ZodError([
+                {
+                    code: 'custom',
+                    message: 'Campo inválido',
+                    path: ['first_name'],
+                },
+            ]);
+        });
+
+        const result = await createUserController.execute(httpRequest);
+
+        expect(result.statusCode).toBe(400);
     });
 });
