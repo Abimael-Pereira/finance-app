@@ -43,4 +43,20 @@ describe('DeleteTransaction', () => {
         expect(result.statusCode).toBe(200);
         expect(result.body).toEqual(httpRequest.body);
     });
+
+    it('should return 400 when transaction id is invalid', async () => {
+        const { deleteTransactionControler } = makeSut();
+
+        const result = await deleteTransactionControler.execute({
+            ...httpRequest,
+            params: {
+                transactionId: 'invalid_id',
+            },
+        });
+
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toEqual({
+            message: 'The provided id is not valid.',
+        });
+    });
 });
