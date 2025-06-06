@@ -59,4 +59,18 @@ describe('DeleteTransaction', () => {
             message: 'The provided id is not valid.',
         });
     });
+
+    it('should return 404 when transaction is not found', async () => {
+        const { deleteTransactionControler, deleteTransactionUseCase } =
+            makeSut();
+
+        jest.spyOn(deleteTransactionUseCase, 'execute').mockResolvedValue(null);
+
+        const result = await deleteTransactionControler.execute(httpRequest);
+
+        expect(result.statusCode).toBe(404);
+        expect(result.body).toEqual({
+            message: 'Transaction not found.',
+        });
+    });
 });
