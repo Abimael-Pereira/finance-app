@@ -44,4 +44,14 @@ describe('UpdateUserController', () => {
 
         expect(result.statusCode).toBe(200);
     });
+
+    it('should return 400 if an invalid userid is provided', async () => {
+        const { updateUserController } = makeSut();
+
+        const result = await updateUserController.execute({
+            params: { userid: 'invalid_id' },
+        });
+
+        expect(result.statusCode).toBe(400);
+    });
 });
