@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { CreateTransactionController } from './create-transaction';
+import { ZodError } from 'zod';
+import { createTransactionSchema } from '../../schemas';
 
 describe('CreateTransactionController', () => {
     class CreateTransactionUseCaseStub {
@@ -142,5 +144,36 @@ describe('CreateTransactionController', () => {
         });
 
         expect(result.statusCode).toBe(400);
+    });
+
+    it('should return 400 when a ZodError is throws', async () => {
+        const { createTransactionController } = makeSut();
+
+        jest.spyOn(createTransactionSchema, 'parseAsync').mockRejectedValue(
+            new ZodError([
+                {
+                    code: 'custom',
+                    message: 'Campo inválido',
+                    path: ['first_name'],
+                },
+            ]),
+        );
+
+        const result = await createTransactionController.execute(httpRequest);
+
+        expect(result.statusCode).toBe(400);
+    });
+
+    it('should return 500 when a serverError is throws', async () => {
+        const { createTransactionController, createTransactionUseCase } =
+            makeSut();
+
+        jest.spyOn(createTransactionUseCase, 'execute').mockRejectedValue(
+            new Error(),
+        );
+
+        const result = await createTransactionController.execute();
+
+        expect(result.statusCode).toBe(500);
     });
 });
