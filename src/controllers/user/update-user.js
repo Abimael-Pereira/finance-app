@@ -41,6 +41,7 @@ export class UpdateUserController {
             if (error instanceof EmailAlreadyInUseError) {
                 return badRequest({ message: error.message });
             }
+
             console.log(error);
             return serverError();
         }
