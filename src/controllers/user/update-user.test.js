@@ -75,7 +75,7 @@ describe('UpdateUserController', () => {
         expect(result.statusCode).toBe(400);
     });
 
-    it('should return 400 if a EmailAlreadyInUseError is throws', async () => {
+    it('should return 400 if an EmailAlreadyInUseError is throws', async () => {
         const { updateUserController, updateUserUseCase } = makeSut();
 
         jest.spyOn(updateUserUseCase, 'execute').mockRejectedValue(
@@ -85,5 +85,15 @@ describe('UpdateUserController', () => {
         const result = await updateUserController.execute(httpRequest);
 
         expect(result.statusCode).toBe(400);
+    });
+
+    it('should return 500 if a ServerError is throws', async () => {
+        const { updateUserController, updateUserUseCase } = makeSut();
+
+        jest.spyOn(updateUserUseCase, 'execute').mockRejectedValue(new Error());
+
+        const result = await updateUserController.execute(httpRequest);
+
+        expect(result.statusCode).toBe(500);
     });
 });
