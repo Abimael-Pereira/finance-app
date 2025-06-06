@@ -5,15 +5,8 @@ import { EmailAlreadyInUseError } from '../../errors/user';
 
 describe('UpdateUserController', () => {
     class UpdateUserUseCaseStub {
-        async execute() {
-            return {
-                first_name: faker.person.firstName(),
-                last_name: faker.person.lastName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            };
+        async execute(user) {
+            return user;
         }
     }
     const makeSut = () => {
@@ -45,6 +38,17 @@ describe('UpdateUserController', () => {
         const result = await updateUserController.execute(httpRequest);
 
         expect(result.statusCode).toBe(200);
+    });
+
+    it('should return 400 when an invalid email is provided', async () => {
+        const { updateUserController } = makeSut();
+
+        const result = await updateUserController.execute({
+            params: httpRequest.params,
+            body: { ...httpRequest.body, email: 'invalidEmail' },
+        });
+
+        expect(result.statusCode).toBe(400);
     });
 
     it('should return 400 if an invalid userid is provided', async () => {
