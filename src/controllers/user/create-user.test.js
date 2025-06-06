@@ -5,7 +5,7 @@ import { ZodError } from 'zod';
 
 describe('Create User Controller', () => {
     class CreateUserUseCaseStub {
-        execute(user) {
+        async execute(user) {
             return user;
         }
     }
@@ -136,9 +136,7 @@ describe('Create User Controller', () => {
     it('should return 500 if CreateUserUseCase throws', async () => {
         const { createUserController, createUserUseCase } = makeSut();
 
-        jest.spyOn(createUserUseCase, 'execute').mockImplementationOnce(() => {
-            throw new Error();
-        });
+        jest.spyOn(createUserUseCase, 'execute').mockRejectedValue(new Error());
 
         const result = await createUserController.execute(httpRequest);
 
@@ -148,9 +146,9 @@ describe('Create User Controller', () => {
     it('should return 400 if CreateUserUseCase throws an EmailAlreadyInUseError', async () => {
         const { createUserController, createUserUseCase } = makeSut();
 
-        jest.spyOn(createUserUseCase, 'execute').mockImplementationOnce(() => {
-            throw new EmailAlreadyInUseError(httpRequest.body.email);
-        });
+        jest.spyOn(createUserUseCase, 'execute').mockRejectedValue(
+            new EmailAlreadyInUseError(),
+        );
 
         const result = await createUserController.execute(httpRequest);
 
@@ -160,15 +158,15 @@ describe('Create User Controller', () => {
     it('should return 400 if CreateUserUseCase throws a ZodError', async () => {
         const { createUserController, createUserUseCase } = makeSut();
 
-        jest.spyOn(createUserUseCase, 'execute').mockImplementationOnce(() => {
-            throw new ZodError([
+        jest.spyOn(createUserUseCase, 'execute').mockRejectedValue(
+            new ZodError([
                 {
                     code: 'custom',
                     message: 'Campo inválido',
                     path: ['first_name'],
                 },
-            ]);
-        });
+            ]),
+        );
 
         const result = await createUserController.execute(httpRequest);
 
