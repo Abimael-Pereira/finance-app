@@ -64,13 +64,31 @@ describe('DeleteTransaction', () => {
         const { deleteTransactionControler, deleteTransactionUseCase } =
             makeSut();
 
-        jest.spyOn(deleteTransactionUseCase, 'execute').mockResolvedValue(null);
+        jest.spyOn(deleteTransactionUseCase, 'execute').mockResolvedValueOnce(
+            null,
+        );
 
         const result = await deleteTransactionControler.execute(httpRequest);
 
         expect(result.statusCode).toBe(404);
         expect(result.body).toEqual({
             message: 'Transaction not found.',
+        });
+    });
+
+    it('should return 500 when DeleteTransactionUseCase throws a ServerError', async () => {
+        const { deleteTransactionControler, deleteTransactionUseCase } =
+            makeSut();
+
+        jest.spyOn(deleteTransactionUseCase, 'execute').mockRejectedValueOnce(
+            new Error(),
+        );
+
+        const result = await deleteTransactionControler.execute(httpRequest);
+
+        expect(result.statusCode).toBe(500);
+        expect(result.body).toEqual({
+            message: 'Internal server error',
         });
     });
 });
