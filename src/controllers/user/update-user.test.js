@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { UpdateUserController } from './update-user';
 import { ZodError } from 'zod';
+import { EmailAlreadyInUseError } from '../../errors/user';
 
 describe('UpdateUserController', () => {
     class UpdateUserUseCaseStub {
@@ -67,6 +68,18 @@ describe('UpdateUserController', () => {
                     path: ['first_name'],
                 },
             ]),
+        );
+
+        const result = await updateUserController.execute(httpRequest);
+
+        expect(result.statusCode).toBe(400);
+    });
+
+    it('should return 400 if a EmailAlreadyInUseError is throws', async () => {
+        const { updateUserController, updateUserUseCase } = makeSut();
+
+        jest.spyOn(updateUserUseCase, 'execute').mockRejectedValue(
+            new EmailAlreadyInUseError(),
         );
 
         const result = await updateUserController.execute(httpRequest);
