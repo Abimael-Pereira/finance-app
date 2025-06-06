@@ -75,6 +75,17 @@ describe('UpdateUserController', () => {
         expect(result.statusCode).toBe(400);
     });
 
+    it('should return 400 if an unallowed field is provided', async () => {
+        const { updateUserController } = makeSut();
+
+        const result = await updateUserController.execute({
+            params: httpRequest.params,
+            body: { ...httpRequest.body, unallowed_field: 'unallowed_field' },
+        });
+
+        expect(result.statusCode).toBe(400);
+    });
+
     it('should return 400 if a ZodError is throws', async () => {
         const { updateUserController, updateUserUseCase } = makeSut();
 
