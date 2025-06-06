@@ -52,4 +52,17 @@ describe('CreateTransactionController', () => {
 
         expect(result.statusCode).toBe(400);
     });
+
+    it('should return 400 when missing name', async () => {
+        const { createTransactionController } = makeSut();
+
+        const result = await createTransactionController.execute({
+            body: {
+                ...httpRequest.body,
+                name: undefined,
+            },
+        });
+
+        expect(result.statusCode).toBe(400);
+    });
 });
