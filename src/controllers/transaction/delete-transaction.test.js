@@ -91,4 +91,17 @@ describe('DeleteTransaction', () => {
             message: 'Internal server error',
         });
     });
+
+    it('should call DeleteTransactionUseCase with correct params', async () => {
+        const { deleteTransactionControler, deleteTransactionUseCase } =
+            makeSut();
+
+        const executeSpy = jest.spyOn(deleteTransactionUseCase, 'execute');
+
+        await deleteTransactionControler.execute(httpRequest);
+
+        expect(executeSpy).toHaveBeenCalledWith(
+            httpRequest.params.transactionId,
+        );
+    });
 });
