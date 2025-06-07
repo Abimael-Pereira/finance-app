@@ -55,4 +55,17 @@ describe('GetTransactionsByUserIdController', () => {
             message: 'The field userID is required',
         });
     });
+
+    it('should return 400 when user id is invalid', async () => {
+        const { getTransactionsByUserIdController } = makeSut();
+
+        const result = await getTransactionsByUserIdController.execute({
+            query: { userId: 'invalid_id' },
+        });
+
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toEqual({
+            message: 'The provided id is not valid.',
+        });
+    });
 });
