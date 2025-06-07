@@ -42,4 +42,17 @@ describe('GetTransactionsByUserIdController', () => {
         expect(result.statusCode).toBe(200);
         expect(result.body).toEqual([body]);
     });
+
+    it('should return 400 when user id in query is missing', async () => {
+        const { getTransactionsByUserIdController } = makeSut();
+
+        const result = await getTransactionsByUserIdController.execute({
+            query: { userId: null },
+        });
+
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toEqual({
+            message: 'The field userID is required',
+        });
+    });
 });
