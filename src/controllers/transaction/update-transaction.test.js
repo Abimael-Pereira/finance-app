@@ -98,4 +98,18 @@ describe('UpdateTransactionController', () => {
         expect(result.statusCode).toBe(500);
         expect(result.body).toEqual({ message: 'Internal server error' });
     });
+
+    it('should call UpdateTransactionUseCase with correct params', async () => {
+        const { updateTransactionController, updateTransactionUseCase } =
+            makeSut();
+
+        const useCase = jest.spyOn(updateTransactionUseCase, 'execute');
+
+        await updateTransactionController.execute(httpRequest);
+
+        expect(useCase).toHaveBeenCalledWith(
+            httpRequest.params.transactionId,
+            httpRequest.body,
+        );
+    });
 });
