@@ -84,4 +84,18 @@ describe('UpdateTransactionController', () => {
 
         expect(result.statusCode).toBe(400);
     });
+
+    it('should return 500 when use case throws a generic error', async () => {
+        const { updateTransactionController, updateTransactionUseCase } =
+            makeSut();
+
+        jest.spyOn(updateTransactionUseCase, 'execute').mockRejectedValueOnce(
+            new Error(),
+        );
+
+        const result = await updateTransactionController.execute(httpRequest);
+
+        expect(result.statusCode).toBe(500);
+        expect(result.body).toEqual({ message: 'Internal server error' });
+    });
 });
