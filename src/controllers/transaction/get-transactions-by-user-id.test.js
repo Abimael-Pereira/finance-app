@@ -111,4 +111,23 @@ describe('GetTransactionsByUserIdController', () => {
             message: 'Internal server error',
         });
     });
+
+    it('should call GetTransactionsByUserIdUseCase with correct userId', async () => {
+        const {
+            getTransactionsByUserIdController,
+            getTransactionsByUserIdUseCase,
+        } = makeSut();
+
+        const userId = faker.string.uuid();
+        const executeSpy = jest.spyOn(
+            getTransactionsByUserIdUseCase,
+            'execute',
+        );
+
+        await getTransactionsByUserIdController.execute({
+            query: { userId },
+        });
+
+        expect(executeSpy).toHaveBeenCalledWith(userId);
+    });
 });

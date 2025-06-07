@@ -149,7 +149,7 @@ describe('CreateTransactionController', () => {
     it('should return 400 when a ZodError is throws', async () => {
         const { createTransactionController } = makeSut();
 
-        jest.spyOn(createTransactionSchema, 'parseAsync').mockRejectedValue(
+        jest.spyOn(createTransactionSchema, 'parseAsync').mockRejectedValueOnce(
             new ZodError([
                 {
                     code: 'custom',
@@ -168,12 +168,34 @@ describe('CreateTransactionController', () => {
         const { createTransactionController, createTransactionUseCase } =
             makeSut();
 
-        jest.spyOn(createTransactionUseCase, 'execute').mockRejectedValue(
+        jest.spyOn(createTransactionUseCase, 'execute').mockRejectedValueOnce(
             new Error(),
         );
 
         const result = await createTransactionController.execute();
 
         expect(result.statusCode).toBe(500);
+    });
+
+    it('should call createTransactionUseCase with correct params', async () => {
+        const { createTransactionController, createTransactionUseCase } =
+            makeSut();
+
+        const executeSpy = jest.spyOn(createTransactionUseCase, 'execute');
+
+        await createTransactionController.execute(httpRequest);
+
+        expect(executeSpy).toHaveBeenCalledWith(httpRequest.body);
+    });
+
+    it('should return the created transaction in the response body', async () => {
+        const { createTransactionController } = makeSut();
+
+        const result = await createTransactionController.execute(httpRequest);
+
+        expect(result.body).toEqual({
+            ...httpRequest.body,
+            id: expect.any(String),
+        });
     });
 });
