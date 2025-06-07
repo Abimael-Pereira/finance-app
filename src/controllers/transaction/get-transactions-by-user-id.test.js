@@ -90,4 +90,25 @@ describe('GetTransactionsByUserIdController', () => {
             message: 'User not found.',
         });
     });
+
+    it('should return 500 when GetUserByIdUseCase throws generic error', async () => {
+        const {
+            getTransactionsByUserIdController,
+            getTransactionsByUserIdUseCase,
+        } = makeSut();
+
+        jest.spyOn(
+            getTransactionsByUserIdUseCase,
+            'execute',
+        ).mockRejectedValueOnce(new Error());
+
+        const result = await getTransactionsByUserIdController.execute({
+            query: { userId: faker.string.uuid() },
+        });
+
+        expect(result.statusCode).toBe(500);
+        expect(result.body).toEqual({
+            message: 'Internal server error',
+        });
+    });
 });
