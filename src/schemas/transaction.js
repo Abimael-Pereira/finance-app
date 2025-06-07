@@ -39,17 +39,15 @@ export const createTransactionSchema = z.object({
 });
 
 export const updateTransactionSchema = createTransactionSchema
-    .omit({
-        user_id: true,
-    })
     .partial()
+    .extend({
+        userId: createTransactionSchema.shape.userId,
+    })
     .strict({
         message: 'Invalid fields provided.',
     })
     .refine(
-        (data) => {
-            return Object.keys(data).some((value) => value !== undefined);
-        },
+        (data) => Object.keys(data).some((key) => data[key] !== undefined),
         {
             message: 'At least one field must be provided for update.',
         },
