@@ -125,4 +125,16 @@ describe('UpdateUserController', () => {
 
         expect(result.statusCode).toBe(500);
     });
+
+    it('should call updateUserUseCase with correct values', async () => {
+        const { updateUserController, updateUserUseCase } = makeSut();
+        const executeSpy = jest.spyOn(updateUserUseCase, 'execute');
+
+        await updateUserController.execute(httpRequest);
+
+        expect(executeSpy).toHaveBeenCalledWith(
+            httpRequest.params.userid,
+            httpRequest.body,
+        );
+    });
 });
