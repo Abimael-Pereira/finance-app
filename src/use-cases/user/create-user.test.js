@@ -94,4 +94,20 @@ describe('Create User Use Case', () => {
             new EmailAlreadyInUseError(createUserParams.email),
         );
     });
+
+    it('should call CreateUserRepository with correct params', async () => {
+        const { createUserUseCase, createUserRepository } = makeSut();
+        const createUserRepositorySpy = jest.spyOn(
+            createUserRepository,
+            'execute',
+        );
+
+        await createUserUseCase.execute(createUserParams);
+
+        expect(createUserRepositorySpy).toHaveBeenCalledWith({
+            ...createUserParams,
+            id: 'generated_id',
+            password: `hashed_${createUserParams.password}`,
+        });
+    });
 });
