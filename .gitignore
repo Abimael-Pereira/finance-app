@@ -3,3 +3,4 @@ postgres-data
 .env
 funcionalidades.txt
 /src/generated/prisma
+coverage
