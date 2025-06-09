@@ -110,4 +110,16 @@ describe('Create User Use Case', () => {
             password: `hashed_${createUserParams.password}`,
         });
     });
+
+    it('should throw an error if getUserByEmailRepository throws', async () => {
+        const { createUserUseCase, getUserByEmailRepository } = makeSut();
+
+        jest.spyOn(getUserByEmailRepository, 'execute').mockRejectedValueOnce(
+            new Error(),
+        );
+
+        const promise = createUserUseCase.execute(createUserParams);
+
+        await expect(promise).rejects.toThrow(Error);
+    });
 });
