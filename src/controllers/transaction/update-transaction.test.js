@@ -9,7 +9,6 @@ describe('UpdateTransactionController', () => {
             transactionId: faker.string.uuid(),
         },
         body: {
-            userId: faker.string.uuid(),
             name: faker.commerce.productName(),
             date: faker.date.recent().toISOString(),
             type: faker.helpers.arrayElement(types),

@@ -39,10 +39,8 @@ export const createTransactionSchema = z.object({
 });
 
 export const updateTransactionSchema = createTransactionSchema
+    .omit({ userId: true })
     .partial()
-    .extend({
-        userId: createTransactionSchema.shape.userId,
-    })
     .strict({
         message: 'Invalid fields provided.',
     })
