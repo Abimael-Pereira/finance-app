@@ -23,6 +23,7 @@ describe('DeleteUserUseCase', () => {
         );
         return { deleteUserUseCase, deleteUserRepositoryStub };
     };
+
     it('sould delete a user successfully', async () => {
         const { deleteUserUseCase } = makeSut();
 
@@ -30,5 +31,17 @@ describe('DeleteUserUseCase', () => {
 
         expect(result).toBeTruthy();
         expect(result).toEqual(user);
+    });
+
+    it('should throw an error if DeleteUserRepository throws', async () => {
+        const { deleteUserUseCase, deleteUserRepositoryStub } = makeSut();
+
+        jest.spyOn(deleteUserRepositoryStub, 'execute').mockRejectedValueOnce(
+            new Error(),
+        );
+
+        const deleteResult = deleteUserUseCase.execute(user.id);
+
+        await expect(deleteResult).rejects.toThrow();
     });
 });
