@@ -66,4 +66,32 @@ describe('GetUserBalance', () => {
 
         await expect(promisse).rejects.toThrow(new UserNotFoundError(userId));
     });
+
+    it('should call GetUserByIdRepository with correct param', async () => {
+        const { getUserBalanceController, getUserByIdRepository } = makeSut();
+
+        const getUserByIdSpyOn = jest.spyOn(getUserByIdRepository, 'execute');
+
+        const userId = faker.string.uuid();
+
+        await getUserBalanceController.execute(userId);
+
+        expect(getUserByIdSpyOn).toHaveBeenCalledWith(userId);
+    });
+
+    it('should call GetUserBalanceRepository with correct param', async () => {
+        const { getUserBalanceController, getUserBalanceRepository } =
+            makeSut();
+
+        const getUserBalanceSpyOn = jest.spyOn(
+            getUserBalanceRepository,
+            'execute',
+        );
+
+        const userId = faker.string.uuid();
+
+        await getUserBalanceController.execute(userId);
+
+        expect(getUserBalanceSpyOn).toHaveBeenCalledWith(userId);
+    });
 });
