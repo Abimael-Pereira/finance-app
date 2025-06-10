@@ -11,7 +11,7 @@ describe('UpdateUserUseCase', () => {
     };
 
     class PostgresGetUserByEmailRepositoryStub {
-        async execute({ email }) {
+        async execute(email) {
             return {
                 ...user,
                 email,
@@ -75,6 +75,25 @@ describe('UpdateUserUseCase', () => {
             ...user,
             first_name: updateUser.first_name,
             last_name: updateUser.last_name,
+            password: `hashed_${updateUser.password}`,
+        });
+    });
+
+    it('should update user successfully (with email)', async () => {
+        const { updateUserUseCase } = makeSut();
+
+        const updateUser = {
+            id: user.id,
+            email: faker.internet.email(),
+            first_name: faker.person.firstName(),
+            last_name: faker.person.lastName(),
+            password: faker.internet.password(),
+        };
+
+        const result = await updateUserUseCase.execute(user.id, updateUser);
+
+        expect(result).toEqual({
+            ...updateUser,
             password: `hashed_${updateUser.password}`,
         });
     });
