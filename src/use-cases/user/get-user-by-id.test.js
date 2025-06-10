@@ -33,4 +33,14 @@ describe('GetUserById', () => {
         expect(result).toBeTruthy();
         expect(result).toEqual(user);
     });
+
+    it('should call GetUserByIdRepository with correct params', async () => {
+        const { getUserByIdRepository, getUserByIdUseCase } = makeSut();
+
+        const repositorySpy = jest.spyOn(getUserByIdRepository, 'execute');
+
+        await getUserByIdUseCase.execute(user.id);
+
+        expect(repositorySpy).toHaveBeenCalledWith(user.id);
+    });
 });
