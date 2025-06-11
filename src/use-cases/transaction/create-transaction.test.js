@@ -1,26 +1,8 @@
-import { faker } from '@faker-js/faker';
 import { CreateTrasactionUseCase } from './create-transaction';
 import { UserNotFoundError } from '../../errors/user';
+import { transactionWithoutId, user } from '../../tests/index.js';
 
 describe('CreateTransactionUseCase', () => {
-    const types = ['EXPENSE', 'EARNING', 'INVESTMENT'];
-
-    const transactionParams = {
-        userId: faker.string.uuid(),
-        name: faker.commerce.productName(),
-        date: faker.date.recent().toISOString(),
-        type: faker.helpers.arrayElement(types),
-        amount: Number(faker.finance.amount()),
-    };
-
-    const user = {
-        id: faker.string.uuid(),
-        email: faker.internet.email(),
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        password: faker.internet.password(),
-    };
-
     class CreateTransactionRepositoryStub {
         async execute(transactionParams) {
             return transactionParams;
@@ -63,9 +45,9 @@ describe('CreateTransactionUseCase', () => {
         const { createTransactionUseCase } = makeSut();
 
         const result =
-            await createTransactionUseCase.execute(transactionParams);
+            await createTransactionUseCase.execute(transactionWithoutId);
 
-        expect(result).toEqual({ ...transactionParams, id: 'random_id' });
+        expect(result).toEqual({ ...transactionWithoutId, id: 'random_id' });
     });
 
     it('should call GetUserByIdRepository with correct params', async () => {
@@ -73,9 +55,9 @@ describe('CreateTransactionUseCase', () => {
 
         const repositorySpy = jest.spyOn(getUserByIdRepository, 'execute');
 
-        await createTransactionUseCase.execute(transactionParams);
+        await createTransactionUseCase.execute(transactionWithoutId);
 
-        expect(repositorySpy).toHaveBeenCalledWith(transactionParams.userId);
+        expect(repositorySpy).toHaveBeenCalledWith(transactionWithoutId.userId);
     });
 
     it('should throw UserNotFoundError if user does not exist', async () => {
@@ -85,10 +67,10 @@ describe('CreateTransactionUseCase', () => {
             null,
         );
 
-        const result = createTransactionUseCase.execute(transactionParams);
+        const result = createTransactionUseCase.execute(transactionWithoutId);
 
         await expect(result).rejects.toThrow(
-            new UserNotFoundError(transactionParams.userId),
+            new UserNotFoundError(transactionWithoutId.userId),
         );
     });
 
@@ -101,10 +83,10 @@ describe('CreateTransactionUseCase', () => {
             'execute',
         );
 
-        await createTransactionUseCase.execute(transactionParams);
+        await createTransactionUseCase.execute(transactionWithoutId);
 
         expect(repositorySpy).toHaveBeenCalledWith({
-            ...transactionParams,
+            ...transactionWithoutId,
             id: 'random_id',
         });
     });
@@ -116,7 +98,7 @@ describe('CreateTransactionUseCase', () => {
             new Error(),
         );
 
-        const result = createTransactionUseCase.execute(transactionParams);
+        const result = createTransactionUseCase.execute(transactionWithoutId);
 
         await expect(result).rejects.toThrow();
     });

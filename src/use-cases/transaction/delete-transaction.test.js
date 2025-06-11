@@ -1,18 +1,7 @@
-import { faker } from '@faker-js/faker';
 import { DeleteTransactionUseCase } from './delete-transaction';
+import { transaction } from '../../tests/index.js';
 
 describe('DeleteTransactionUseCase', () => {
-    const types = ['EXPENSE', 'EARNING', 'INVESTMENT'];
-
-    const transaction = {
-        id: faker.string.uuid(),
-        userId: faker.string.uuid(),
-        name: faker.commerce.productName(),
-        date: faker.date.recent().toISOString(),
-        type: faker.helpers.arrayElement(types),
-        amount: Number(faker.finance.amount()),
-    };
-
     class DeleteTransactionRepositoryStub {
         async execute(transactionId) {
             return { ...transaction, id: transactionId };
