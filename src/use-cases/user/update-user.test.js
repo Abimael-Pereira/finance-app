@@ -1,16 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { UpdateUserUseCase } from './update-user';
 import { EmailAlreadyInUseError } from '../../errors/user';
+import { user } from '../../tests/index.js';
 
 describe('UpdateUserUseCase', () => {
-    const user = {
-        id: faker.string.uuid(),
-        email: faker.internet.email(),
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        password: faker.internet.password(),
-    };
-
     class PostgresGetUserByEmailRepositoryStub {
         async execute(email) {
             return {
@@ -56,73 +49,58 @@ describe('UpdateUserUseCase', () => {
         };
     };
 
+    const updatedUser = {
+        id: user.id,
+        email: faker.internet.email(),
+        first_name: faker.person.firstName(),
+        last_name: faker.person.lastName(),
+        password: faker.internet.password(),
+    };
+
     it('should update user successfully (without email)', async () => {
         const { updateUserUseCase } = makeSut();
 
-        const updateUser = {
-            id: user.id,
-            email: user.email,
-            first_name: faker.person.firstName(),
-            last_name: faker.person.lastName(),
-            password: faker.internet.password(),
-        };
-
         const result = await updateUserUseCase.execute(
-            updateUser.id,
-            updateUser,
+            updatedUser.id,
+            updatedUser,
         );
 
         expect(result).toEqual({
             ...user,
-            first_name: updateUser.first_name,
-            last_name: updateUser.last_name,
-            password: `hashed_${updateUser.password}`,
+            email: updatedUser.email,
+            first_name: updatedUser.first_name,
+            last_name: updatedUser.last_name,
+            password: `hashed_${updatedUser.password}`,
         });
     });
 
     it('should update user successfully (with email)', async () => {
         const { updateUserUseCase } = makeSut();
 
-        const updateUser = {
-            id: user.id,
-            email: faker.internet.email(),
-            first_name: faker.person.firstName(),
-            last_name: faker.person.lastName(),
-            password: faker.internet.password(),
-        };
-
-        const result = await updateUserUseCase.execute(user.id, updateUser);
+        const result = await updateUserUseCase.execute(user.id, updatedUser);
 
         expect(result).toEqual({
-            ...updateUser,
-            password: `hashed_${updateUser.password}`,
+            ...updatedUser,
+            password: `hashed_${updatedUser.password}`,
         });
     });
 
     it('should throws an EmailAlreadyInUseError if email already in use', async () => {
         const { updateUserUseCase, getUserByEmailRepository } = makeSut();
 
-        const updateUser = {
-            id: user.id,
-            email: faker.internet.email(),
-            first_name: faker.person.firstName(),
-            last_name: faker.person.lastName(),
-            password: faker.internet.password(),
-        };
-
         const getUserByEmailReturned = {
             id: faker.string.uuid(),
-            email: updateUser.email,
+            email: updatedUser.email,
         };
 
         jest.spyOn(getUserByEmailRepository, 'execute').mockResolvedValueOnce(
             getUserByEmailReturned,
         );
 
-        const result = updateUserUseCase.execute(user.id, updateUser);
+        const result = updateUserUseCase.execute(user.id, updatedUser);
 
         await expect(result).rejects.toThrow(
-            new EmailAlreadyInUseError(updateUser.email),
+            new EmailAlreadyInUseError(updatedUser.email),
         );
     });
 

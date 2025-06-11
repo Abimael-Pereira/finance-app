@@ -1,15 +1,7 @@
-import { faker } from '@faker-js/faker';
 import { DeleteUserUseCase } from './delete-user';
+import { user } from '../../tests/index.js';
 
 describe('DeleteUserUseCase', () => {
-    const user = {
-        id: faker.string.uuid(),
-        email: faker.internet.email(),
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        password: faker.internet.password(),
-    };
-
     class DeleteUserRepositoryStub {
         async execute(userId) {
             return { ...user, id: userId };
