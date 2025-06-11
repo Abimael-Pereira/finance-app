@@ -7,3 +7,10 @@ export const user = {
     last_name: faker.person.lastName(),
     password: faker.internet.password(),
 };
+
+export const userBalance = {
+    earnings: '1000',
+    expenses: '500',
+    invesments: '200',
+    balance: '300',
+};
