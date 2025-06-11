@@ -18,3 +18,10 @@ export const transactionWithoutId = {
     type: faker.helpers.arrayElement(types),
     amount: Number(faker.finance.amount()),
 };
+
+export const updateTransactionParams = {
+    name: faker.commerce.productName(),
+    date: faker.date.recent().toISOString(),
+    type: faker.helpers.arrayElement(types),
+    amount: Number(faker.finance.amount()),
+};
