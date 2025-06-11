@@ -1,6 +1,7 @@
 node_modules
 postgres-data
 .env
+.env.test
 funcionalidades.txt
 /src/generated/prisma
 coverage
