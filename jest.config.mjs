@@ -10,6 +10,7 @@ const config = {
     watchPathIgnorePatterns: ['<rootDir>/postgres-data/'],
     collectCoverageFrom: ['src/**/*.js'],
     testPathIgnorePatterns: ['/node_modules/', '/postgres-data/'],
+    globalSetup: '<rootDir>/jest.global-setup.mjs',
 };
 
 export default config;
