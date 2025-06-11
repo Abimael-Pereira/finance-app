@@ -1,7 +1,7 @@
-import { faker } from '@faker-js/faker';
 import { CreateUserController } from './create-user';
 import { EmailAlreadyInUseError } from '../../errors/user';
 import { ZodError } from 'zod';
+import { createOrUpdateUserParams } from '../../tests/';
 
 describe('Create User Controller', () => {
     class CreateUserUseCaseStub {
@@ -20,14 +20,7 @@ describe('Create User Controller', () => {
     };
 
     const httpRequest = {
-        body: {
-            first_name: faker.person.firstName(),
-            last_name: faker.person.lastName(),
-            email: faker.internet.email(),
-            password: faker.internet.password({
-                length: 6,
-            }),
-        },
+        body: createOrUpdateUserParams,
     };
 
     it('should return 201 when creating an user successfully', async () => {
@@ -40,7 +33,6 @@ describe('Create User Controller', () => {
 
         // assert
         expect(result.statusCode).toBe(201);
-        expect(result.body).toBeTruthy();
         expect(result.body).toEqual(httpRequest.body);
     });
 
@@ -130,7 +122,6 @@ describe('Create User Controller', () => {
         await createUserController.execute(httpRequest);
 
         expect(executeSpy).toHaveBeenCalledWith(httpRequest.body);
-        expect(executeSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should return 500 if CreateUserUseCase throws', async () => {

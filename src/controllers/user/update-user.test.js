@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { UpdateUserController } from './update-user';
 import { ZodError } from 'zod';
 import { EmailAlreadyInUseError } from '../../errors/user';
+import { createOrUpdateUserParams } from '../../tests';
 
 describe('UpdateUserController', () => {
     class UpdateUserUseCaseStub {
@@ -22,14 +23,7 @@ describe('UpdateUserController', () => {
         params: {
             userid: faker.string.uuid(),
         },
-        body: {
-            first_name: faker.person.firstName(),
-            last_name: faker.person.lastName(),
-            email: faker.internet.email(),
-            password: faker.internet.password({
-                length: 6,
-            }),
-        },
+        body: createOrUpdateUserParams,
     };
 
     it('should return 200 when updating a user', async () => {
@@ -51,7 +45,7 @@ describe('UpdateUserController', () => {
         expect(result.statusCode).toBe(400);
     });
 
-    it('should return 400 when an password is provided', async () => {
+    it('should return 400 when a invalid password is provided', async () => {
         const { updateUserController } = makeSut();
 
         const result = await updateUserController.execute({
