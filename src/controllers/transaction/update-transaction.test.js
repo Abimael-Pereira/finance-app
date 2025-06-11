@@ -1,19 +1,13 @@
 import { faker } from '@faker-js/faker';
 import { UpdateTransactionController } from './update-transaction';
+import { updateTransactionParams } from '../../tests';
 
 describe('UpdateTransactionController', () => {
-    const types = ['EXPENSE', 'EARNING', 'INVESTMENT'];
-
     const httpRequest = {
         params: {
             transactionId: faker.string.uuid(),
         },
-        body: {
-            name: faker.commerce.productName(),
-            date: faker.date.recent().toISOString(),
-            type: faker.helpers.arrayElement(types),
-            amount: Number(faker.finance.amount()),
-        },
+        body: updateTransactionParams,
     };
 
     class UpdataTransactionUseCaseStub {

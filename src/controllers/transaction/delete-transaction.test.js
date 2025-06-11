@@ -1,20 +1,14 @@
 import { faker } from '@faker-js/faker';
 import { DeleteTransactionController } from './delete-transaction';
+import { transaction } from '../../tests/index.js';
 
 describe('DeleteTransaction', () => {
-    const types = ['EXPENSE', 'EARNING', 'INVESTMENT'];
-
     const httpRequest = {
         params: {
             transactionId: faker.string.uuid(),
         },
         body: {
-            id: faker.string.uuid(),
-            userId: faker.string.uuid(),
-            name: faker.commerce.productName(),
-            date: faker.date.recent().toISOString(),
-            type: faker.helpers.arrayElement(types),
-            amount: Number(faker.finance.amount()),
+            transaction,
         },
     };
 
