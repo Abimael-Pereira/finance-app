@@ -10,6 +10,9 @@ const config = {
     watchPathIgnorePatterns: [
         '<rootDir>/coverage/',
         '<rootDir>/postgres-data/',
+        '<rootDir>/jest.global-setup.json',
+        '<rootDir>/jest.setup-after-env.json',
+        '<rootDir>/node_modules/',
     ],
     collectCoverageFrom: ['src/**/*.js'],
     testPathIgnorePatterns: ['/node_modules/', '/postgres-data/'],
