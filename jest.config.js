@@ -13,7 +13,7 @@ const config = {
     ],
     collectCoverageFrom: ['src/**/*.js'],
     testPathIgnorePatterns: ['/node_modules/', '/postgres-data/'],
-    globalSetup: '<rootDir>/jest.global-setup.mjs',
+    globalSetup: '<rootDir>/jest.global-setup.js',
     setupFilesAfterEnv: ['<rootDir>/jest.setup-after-env.js'],
 };
 
