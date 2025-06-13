@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { prisma } from '../../../../prisma/prisma';
-import { user as fakerUser } from '../../../tests';
+import { user as fakeUser } from '../../../tests';
 import { PostgresUpdateUserRepository } from './update-user';
 
 describe('UpdateUserRepository', () => {
@@ -12,29 +12,39 @@ describe('UpdateUserRepository', () => {
     };
 
     it('should update a user on db', async () => {
-        await prisma.user.create({ data: fakerUser });
+        await prisma.user.create({ data: fakeUser });
 
         const sut = new PostgresUpdateUserRepository();
 
-        const result = await sut.execute(fakerUser.id, updateUserParams);
+        const result = await sut.execute(fakeUser.id, updateUserParams);
 
-        expect(result).toStrictEqual({ ...fakerUser, ...updateUserParams });
+        expect(result).toStrictEqual({ ...fakeUser, ...updateUserParams });
     });
 
     it('should call Prisma with correct params', async () => {
-        await prisma.user.create({ data: fakerUser });
+        await prisma.user.create({ data: fakeUser });
 
         const sut = new PostgresUpdateUserRepository();
 
         const prismaSpy = jest.spyOn(prisma.user, 'update');
 
-        await sut.execute(fakerUser.id, updateUserParams);
+        await sut.execute(fakeUser.id, updateUserParams);
 
         expect(prismaSpy).toHaveBeenCalledWith({
             where: {
-                id: fakerUser.id,
+                id: fakeUser.id,
             },
             data: updateUserParams,
         });
+    });
+
+    it('should throw if Prisma throws', async () => {
+        const sut = new PostgresUpdateUserRepository();
+
+        jest.spyOn(prisma.user, 'update').mockRejectedValueOnce(new Error());
+
+        const promisse = sut.execute(fakeUser.id, updateUserParams);
+
+        await expect(promisse).rejects.toThrow();
     });
 });
