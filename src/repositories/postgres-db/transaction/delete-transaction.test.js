@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { prisma } from '../../../../prisma/prisma';
+import { prisma } from '../../../../prisma/prisma.js';
 import { transaction, user } from '../../../tests/';
 import { PostgresDeleteTransactionRepository } from './delete-transaction';
 
@@ -31,5 +31,19 @@ describe('DeleteTransactionRepository', () => {
             dayjs(transaction.date).month(),
         );
         expect(dayjs(result.date).year()).toBe(dayjs(transaction.date).year());
+    });
+
+    it('shoul call prisma with correct params', async () => {
+        const sut = new PostgresDeleteTransactionRepository();
+
+        const result = jest.spyOn(prisma.transaction, 'delete');
+
+        await sut.execute(transaction.id);
+
+        await expect(result).toHaveBeenCalledWith({
+            where: {
+                id: transaction.id,
+            },
+        });
     });
 });
