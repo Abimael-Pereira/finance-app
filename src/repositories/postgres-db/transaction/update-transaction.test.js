@@ -9,32 +9,32 @@ import { PostgresUpdateTransactionRepository } from './update-transaction';
 import { faker } from '@faker-js/faker';
 
 describe('UpdateTransactionRepository', () => {
+    const paramsUpdate = {
+        id: transaction.id,
+        userId: fakeUser.id,
+        name: faker.commerce.productName(),
+        date: faker.date.recent().toISOString(),
+        type: faker.helpers.arrayElement(typesOfTransaction),
+        amount: Number(faker.finance.amount()),
+    };
+
     it('should update a transaction on db', async () => {
         await prisma.user.create({ data: fakeUser });
         await prisma.transaction.create({
             data: { ...transaction, userId: fakeUser.id },
         });
 
-        const transactionUpdate = {
-            id: transaction.id,
-            userId: fakeUser.id,
-            name: faker.commerce.productName(),
-            date: faker.date.recent().toISOString(),
-            type: faker.helpers.arrayElement(typesOfTransaction),
-            amount: Number(faker.finance.amount()),
-        };
-
         const sut = new PostgresUpdateTransactionRepository();
 
-        const result = await sut.execute(transaction.id, transactionUpdate);
+        const result = await sut.execute(transaction.id, paramsUpdate);
 
         expect({
             ...result,
             amount: result.amount.toString(),
             date: undefined,
         }).toStrictEqual({
-            ...transactionUpdate,
-            amount: transactionUpdate.amount.toString(),
+            ...paramsUpdate,
+            amount: paramsUpdate.amount.toString(),
             date: undefined,
         });
         expect(dayjs(result.date).daysInMonth()).toBe(
@@ -44,5 +44,24 @@ describe('UpdateTransactionRepository', () => {
             dayjs(transaction.date).month(),
         );
         expect(dayjs(result.date).year()).toBe(dayjs(transaction.date).year());
+    });
+
+    it('should call Prisma with correct params', async () => {
+        await prisma.user.create({ data: fakeUser });
+        await prisma.transaction.create({
+            data: { ...transaction, userId: fakeUser.id },
+        });
+        const sut = new PostgresUpdateTransactionRepository();
+
+        const prismaSpy = jest.spyOn(prisma.transaction, 'update');
+
+        await sut.execute(transaction.id, paramsUpdate);
+
+        expect(prismaSpy).toHaveBeenCalledWith({
+            where: {
+                id: transaction.id,
+            },
+            data: paramsUpdate,
+        });
     });
 });
