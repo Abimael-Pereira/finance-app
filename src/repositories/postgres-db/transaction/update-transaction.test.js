@@ -1,0 +1,48 @@
+import dayjs from 'dayjs';
+import { prisma } from '../../../../prisma/prisma';
+import {
+    transaction,
+    user as fakeUser,
+    typesOfTransaction,
+} from '../../../tests/';
+import { PostgresUpdateTransactionRepository } from './update-transaction';
+import { faker } from '@faker-js/faker';
+
+describe('UpdateTransactionRepository', () => {
+    it('should update a transaction on db', async () => {
+        await prisma.user.create({ data: fakeUser });
+        await prisma.transaction.create({
+            data: { ...transaction, userId: fakeUser.id },
+        });
+
+        const transactionUpdate = {
+            id: transaction.id,
+            userId: fakeUser.id,
+            name: faker.commerce.productName(),
+            date: faker.date.recent().toISOString(),
+            type: faker.helpers.arrayElement(typesOfTransaction),
+            amount: Number(faker.finance.amount()),
+        };
+
+        const sut = new PostgresUpdateTransactionRepository();
+
+        const result = await sut.execute(transaction.id, transactionUpdate);
+
+        expect({
+            ...result,
+            amount: result.amount.toString(),
+            date: undefined,
+        }).toStrictEqual({
+            ...transactionUpdate,
+            amount: transactionUpdate.amount.toString(),
+            date: undefined,
+        });
+        expect(dayjs(result.date).daysInMonth()).toBe(
+            dayjs(transaction.date).daysInMonth(),
+        );
+        expect(dayjs(result.date).month()).toBe(
+            dayjs(transaction.date).month(),
+        );
+        expect(dayjs(result.date).year()).toBe(dayjs(transaction.date).year());
+    });
+});
