@@ -34,6 +34,19 @@ describe('UpdateTransactionController', () => {
         expect(result.body).toEqual(httpRequest.body);
     });
 
+    it('should return 400 when an invalid id is provided', async () => {
+        const { updateTransactionController } = makeSut();
+
+        const result = await updateTransactionController.execute({
+            params: { transactionId: 'invalid_id' },
+        });
+
+        expect(result.statusCode).toBe(400);
+        expect(result.body).toEqual({
+            message: 'The provided id is not valid.',
+        });
+    });
+
     it('should return 400 when unallowed field is provided', async () => {
         const { updateTransactionController } = makeSut();
 
