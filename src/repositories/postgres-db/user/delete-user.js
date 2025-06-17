@@ -1,3 +1,4 @@
+import { UserNotFoundError } from '../../../errors/index.js';
 import { prisma } from '../../../../prisma/prisma.js';
 
 export class PostgresDeleteUserRepository {
@@ -9,9 +10,11 @@ export class PostgresDeleteUserRepository {
                 },
             });
         } catch (error) {
-            console.log(error);
+            if (error.code === 'P2025') {
+                throw new UserNotFoundError(userId);
+            }
 
-            return null;
+            throw error;
         }
     }
 }
