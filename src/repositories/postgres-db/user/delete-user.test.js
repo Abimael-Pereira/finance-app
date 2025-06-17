@@ -25,15 +25,20 @@ describe('DeleteUserRepository', () => {
     });
 
     it('should throw UserNotFoundError if user not foud', async () => {
-        await prisma.user.create({ data: user });
         const sut = new PostgresDeleteUserRepository();
-
-        jest.spyOn(prisma.user, 'delete').mockRejectedValueOnce(
-            new UserNotFoundError(user.id),
-        );
 
         const result = sut.execute(user.id);
 
         await expect(result).rejects.toThrow(new UserNotFoundError(user.id));
+    });
+
+    it('should throw generic error if Prisma throw generic error', async () => {
+        const sut = new PostgresDeleteUserRepository();
+
+        jest.spyOn(prisma.user, 'delete').mockRejectedValueOnce(new Error());
+
+        const result = sut.execute(user.id);
+
+        await expect(result).rejects.toThrow();
     });
 });
