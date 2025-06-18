@@ -115,4 +115,16 @@ describe('UserRoutes E2E Tests', () => {
             message: 'User not found.',
         });
     });
+
+    it('GET /api/users/:userId/balance should return 404 when user is not found', async () => {
+        const nonExistentUserId = faker.string.uuid();
+        const response = await request(app).get(
+            `/api/users/${nonExistentUserId}/balance`,
+        );
+
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({
+            message: 'User not found.',
+        });
+    });
 });
