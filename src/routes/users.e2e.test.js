@@ -2,6 +2,7 @@ import { user } from '../tests/index.js';
 import { app } from '../app.js';
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
+import { TransactionType } from '@prisma/client';
 
 describe('UserRoutes E2E Tests', () => {
     it('POST /api/users should return 201 when user is created', async () => {
@@ -59,5 +60,47 @@ describe('UserRoutes E2E Tests', () => {
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(createdUser);
+    });
+
+    it('GET /api/users/:userId/balance should return 200 when get user balance', async () => {
+        const { body: createdUser } = await request(app)
+            .post('/api/users')
+            .send({ ...user, id: undefined });
+
+        await request(app).post('/api/transactions').send({
+            name: faker.commerce.productName(),
+            date: faker.date.recent().toISOString(),
+            userId: createdUser.id,
+            type: TransactionType.EARNING,
+            amount: 5000,
+        });
+
+        await request(app).post('/api/transactions').send({
+            name: faker.commerce.productName(),
+            date: faker.date.recent().toISOString(),
+            userId: createdUser.id,
+            type: TransactionType.EXPENSE,
+            amount: 2000,
+        });
+
+        await request(app).post('/api/transactions').send({
+            name: faker.commerce.productName(),
+            date: faker.date.recent().toISOString(),
+            userId: createdUser.id,
+            type: TransactionType.INVESTMENT,
+            amount: 1000,
+        });
+
+        const response = await request(app).get(
+            `/api/users/${createdUser.id}/balance`,
+        );
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+            balance: '2000',
+            earnings: '5000',
+            expenses: '2000',
+            investments: '1000',
+        });
     });
 });
