@@ -61,7 +61,7 @@ describe('GetUserBalanceRepository', () => {
 
         expect(result.earnings.toString()).toBe('10000');
         expect(result.expenses.toString()).toBe('2000');
-        expect(result.invesments.toString()).toBe('6000');
+        expect(result.investments.toString()).toBe('6000');
         expect(result.balance.toString()).toBe('2000');
     });
 
