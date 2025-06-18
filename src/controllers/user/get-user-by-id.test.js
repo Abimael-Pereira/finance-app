@@ -20,7 +20,7 @@ describe('GetUserByIdController', () => {
 
     const httpRequest = {
         params: {
-            userid: faker.string.uuid(),
+            userId: faker.string.uuid(),
         },
     };
 
@@ -36,7 +36,7 @@ describe('GetUserByIdController', () => {
         const { getUserByIdController } = makeSut();
 
         const result = await getUserByIdController.execute({
-            params: { userid: 'invalid_id' },
+            params: { userId: 'invalid_id' },
         });
 
         expect(result.statusCode).toBe(400);
@@ -71,6 +71,6 @@ describe('GetUserByIdController', () => {
 
         await getUserByIdController.execute(httpRequest);
 
-        expect(executeSpy).toHaveBeenCalledWith(httpRequest.params.userid);
+        expect(executeSpy).toHaveBeenCalledWith(httpRequest.params.userId);
     });
 });

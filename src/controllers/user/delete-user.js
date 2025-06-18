@@ -13,7 +13,7 @@ export class DeleteUserController {
     }
     async execute(httpRequest) {
         try {
-            const userId = httpRequest.params.userid;
+            const userId = httpRequest.params.userId;
 
             const idIsValid = checkIfIdIsValid(userId);
             if (!idIsValid) {

@@ -21,7 +21,7 @@ describe('DeleteUserController', () => {
 
     const httpRequest = {
         params: {
-            userid: faker.string.uuid(),
+            userId: faker.string.uuid(),
         },
     };
 
@@ -37,7 +37,7 @@ describe('DeleteUserController', () => {
         const { deleteUserController } = makeSut();
 
         const result = await deleteUserController.execute({
-            params: { userid: 'invalid_id' },
+            params: { userId: 'invalid_id' },
         });
 
         expect(result.statusCode).toBe(400);
@@ -72,6 +72,6 @@ describe('DeleteUserController', () => {
 
         await deleteUserController.execute(httpRequest);
 
-        expect(executeSpy).toHaveBeenCalledWith(httpRequest.params.userid);
+        expect(executeSpy).toHaveBeenCalledWith(httpRequest.params.userId);
     });
 });

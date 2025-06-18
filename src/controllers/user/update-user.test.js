@@ -21,7 +21,7 @@ describe('UpdateUserController', () => {
 
     const httpRequest = {
         params: {
-            userid: faker.string.uuid(),
+            userId: faker.string.uuid(),
         },
         body: createOrUpdateUserParams,
     };
@@ -63,7 +63,7 @@ describe('UpdateUserController', () => {
         const { updateUserController } = makeSut();
 
         const result = await updateUserController.execute({
-            params: { userid: 'invalid_id' },
+            params: { userId: 'invalid_id' },
         });
 
         expect(result.statusCode).toBe(400);
@@ -127,7 +127,7 @@ describe('UpdateUserController', () => {
         await updateUserController.execute(httpRequest);
 
         expect(executeSpy).toHaveBeenCalledWith(
-            httpRequest.params.userid,
+            httpRequest.params.userId,
             httpRequest.body,
         );
     });

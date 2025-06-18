@@ -15,7 +15,7 @@ export class UpdateUserController {
     }
     async execute(httpRequest) {
         try {
-            const userId = httpRequest.params.userid;
+            const userId = httpRequest.params.userId;
             const isIdValid = checkIfIdIsValid(userId);
             if (!isIdValid) {
                 return invalidIdResponse();

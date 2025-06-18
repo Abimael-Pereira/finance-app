@@ -9,7 +9,7 @@ import {
 
 export const usersRouter = Router();
 
-usersRouter.get('/:userid', async (request, response) => {
+usersRouter.get('/:userId', async (request, response) => {
     const getUserByIdController = makeGetUserByIdController();
     const { statusCode, body } = await getUserByIdController.execute(request);
 
@@ -31,14 +31,14 @@ usersRouter.post('/', async (request, response) => {
     response.status(statusCode).json(body);
 });
 
-usersRouter.patch('/:userid', async (request, response) => {
+usersRouter.patch('/:userId', async (request, response) => {
     const updateUserController = makeUpdateUserController();
     const { statusCode, body } = await updateUserController.execute(request);
 
     response.status(statusCode).send(body);
 });
 
-usersRouter.delete('/:userid', async (request, response) => {
+usersRouter.delete('/:userId', async (request, response) => {
     const deleteUserController = makeDeleteUserController();
     const { statusCode, body } = await deleteUserController.execute(request);
 
