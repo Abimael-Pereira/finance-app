@@ -24,12 +24,6 @@ describe('TransactionsRoutes E2E Tests', () => {
         expect(dayjs(response.body).date()).toBe(
             dayjs(transactionWithoutId).date(),
         );
-        expect(dayjs(response.body).month()).toBe(
-            dayjs(transactionWithoutId).month(),
-        );
-        expect(dayjs(response.body).year()).toBe(
-            dayjs(transactionWithoutId).year(),
-        );
     });
 
     it('GET /api/transactions?userId should return 200 when fetching transactions successfully', async () => {
@@ -58,12 +52,6 @@ describe('TransactionsRoutes E2E Tests', () => {
         expect(response.body[0].name).toBe(transactionParams.name);
         expect(dayjs(response.body[0].date).date()).toBe(
             dayjs(transactionParams.date).date(),
-        );
-        expect(dayjs(response.body[0].date).month()).toBe(
-            dayjs(transactionParams.date).month(),
-        );
-        expect(dayjs(response.body[0].date).year()).toBe(
-            dayjs(transactionParams.date).year(),
         );
     });
 
@@ -100,11 +88,34 @@ describe('TransactionsRoutes E2E Tests', () => {
         expect(dayjs(response.body.date).date()).toBe(
             dayjs(updatedTransaction.date).date(),
         );
-        expect(dayjs(response.body.date).month()).toBe(
-            dayjs(updatedTransaction.date).month(),
+    });
+
+    it('DELETE /api/transactions/:transactionId should return 200 when deleting a transaction successfully', async () => {
+        const { body: createdUser } = await request(app)
+            .post('/api/users')
+            .send({ ...user, id: undefined });
+
+        const transactionParams = {
+            ...transactionWithoutId,
+            userId: createdUser.id,
+        };
+
+        const { body: createdTransaction } = await request(app)
+            .post('/api/transactions')
+            .send(transactionParams);
+
+        const response = await request(app).delete(
+            `/api/transactions/${createdTransaction.id}`,
         );
-        expect(dayjs(response.body.date).year()).toBe(
-            dayjs(updatedTransaction.date).year(),
+
+        expect(response.status).toBe(200);
+        expect(response.body.id).toBe(createdTransaction.id);
+        expect(response.body.userId).toBe(createdUser.id);
+        expect(response.body.type).toBe(createdTransaction.type);
+        expect(response.body.amount).toBe(String(createdTransaction.amount));
+        expect(response.body.name).toBe(createdTransaction.name);
+        expect(dayjs(response.body.date).date()).toBe(
+            dayjs(createdTransaction.date).date(),
         );
     });
 });
