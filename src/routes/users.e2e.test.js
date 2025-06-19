@@ -112,7 +112,7 @@ describe('UserRoutes E2E Tests', () => {
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({
-            message: 'User not found.',
+            message: 'User not found',
         });
     });
 
@@ -124,7 +124,7 @@ describe('UserRoutes E2E Tests', () => {
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({
-            message: 'User not found.',
+            message: 'User not found',
         });
     });
 
@@ -136,7 +136,7 @@ describe('UserRoutes E2E Tests', () => {
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({
-            message: 'User not found.',
+            message: 'User not found',
         });
     });
 
@@ -148,7 +148,7 @@ describe('UserRoutes E2E Tests', () => {
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({
-            message: 'User not found.',
+            message: 'User not found',
         });
     });
 
@@ -163,7 +163,7 @@ describe('UserRoutes E2E Tests', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            message: `The e-mail ${user.email} is already in use.`,
+            message: `The e-mail ${user.email} is already in use`,
         });
     });
 });

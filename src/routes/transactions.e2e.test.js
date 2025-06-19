@@ -126,7 +126,7 @@ describe('TransactionsRoutes E2E Tests', () => {
             .send({ name: 'Updated Transaction' });
 
         expect(response.status).toBe(404);
-        expect(response.body.message).toBe('Transaction not found.');
+        expect(response.body.message).toBe('Transaction not found');
     });
 
     it('DELETE /api/transactions/:transactionId should return 404 when transaction does not exist', async () => {
@@ -135,7 +135,7 @@ describe('TransactionsRoutes E2E Tests', () => {
         );
 
         expect(response.status).toBe(404);
-        expect(response.body.message).toBe('Transaction not found.');
+        expect(response.body.message).toBe('Transaction not found');
     });
 
     it('GET /api/transactions should return 400 when user not found', async () => {
@@ -144,7 +144,7 @@ describe('TransactionsRoutes E2E Tests', () => {
         });
 
         expect(response.status).toBe(404);
-        expect(response.body.message).toBe('User not found.');
+        expect(response.body.message).toBe('User not found');
     });
 
     it('GET /api/transactions should return 400 when userId is not provided', async () => {

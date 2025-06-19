@@ -51,7 +51,7 @@ describe('DeleteTransaction', () => {
 
         expect(result.statusCode).toBe(400);
         expect(result.body).toEqual({
-            message: 'The provided id is not valid.',
+            message: 'The provided id is not valid',
         });
     });
 
@@ -67,7 +67,7 @@ describe('DeleteTransaction', () => {
 
         expect(result.statusCode).toBe(404);
         expect(result.body).toEqual({
-            message: 'Transaction not found.',
+            message: 'Transaction not found',
         });
     });
 

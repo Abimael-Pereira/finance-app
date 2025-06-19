@@ -61,7 +61,7 @@ describe('GetTransactionsByUserIdController', () => {
 
         expect(result.statusCode).toBe(400);
         expect(result.body).toEqual({
-            message: 'The provided id is not valid.',
+            message: 'The provided id is not valid',
         });
     });
 
@@ -82,7 +82,7 @@ describe('GetTransactionsByUserIdController', () => {
 
         expect(result.statusCode).toBe(404);
         expect(result.body).toEqual({
-            message: 'User not found.',
+            message: 'User not found',
         });
     });
 

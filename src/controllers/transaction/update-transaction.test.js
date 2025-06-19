@@ -44,7 +44,7 @@ describe('UpdateTransactionController', () => {
 
         expect(result.statusCode).toBe(400);
         expect(result.body).toEqual({
-            message: 'The provided id is not valid.',
+            message: 'The provided id is not valid',
         });
     });
 
@@ -131,6 +131,6 @@ describe('UpdateTransactionController', () => {
         const result = await updateTransactionController.execute(httpRequest);
 
         expect(result.statusCode).toBe(404);
-        expect(result.body).toEqual({ message: 'Transaction not found.' });
+        expect(result.body).toEqual({ message: 'Transaction not found' });
     });
 });

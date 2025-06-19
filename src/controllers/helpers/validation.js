@@ -3,7 +3,7 @@ import { badRequest } from './index.js';
 
 export const invalidIdResponse = () =>
     badRequest({
-        message: 'The provided id is not valid.',
+        message: 'The provided id is not valid',
     });
 
 export const requiredFieldIsMissingResponse = (missingField) =>

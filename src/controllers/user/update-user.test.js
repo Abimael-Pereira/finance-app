@@ -143,7 +143,7 @@ describe('UpdateUserController', () => {
 
         expect(result.statusCode).toBe(404);
         expect(result.body).toEqual({
-            message: 'User not found.',
+            message: 'User not found',
         });
     });
 });
