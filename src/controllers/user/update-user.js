@@ -1,5 +1,8 @@
 import { ZodError } from 'zod';
-import { EmailAlreadyInUseError } from '../../errors/user.js';
+import {
+    EmailAlreadyInUseError,
+    UserNotFoundError,
+} from '../../errors/index.js';
 import { updateUserSchema } from '../../schemas/index.js';
 import {
     badRequest,
@@ -7,6 +10,7 @@ import {
     serverError,
     invalidIdResponse,
     checkIfIdIsValid,
+    userNotFoundResponse,
 } from '../helpers/index.js';
 
 export class UpdateUserController {
@@ -40,6 +44,10 @@ export class UpdateUserController {
 
             if (error instanceof EmailAlreadyInUseError) {
                 return badRequest({ message: error.message });
+            }
+
+            if (error instanceof UserNotFoundError) {
+                return userNotFoundResponse();
             }
 
             console.log(error);
