@@ -151,4 +151,19 @@ describe('UserRoutes E2E Tests', () => {
             message: 'User not found.',
         });
     });
+
+    it('POST /api/users should return 400 when the provided email is already in use', async () => {
+        await request(app)
+            .post('/api/users')
+            .send({ ...user, id: undefined });
+
+        const response = await request(app)
+            .post('/api/users')
+            .send({ ...user, id: undefined });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            message: `The e-mail ${user.email} is already in use.`,
+        });
+    });
 });
