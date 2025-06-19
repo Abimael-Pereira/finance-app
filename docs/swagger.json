@@ -30,13 +30,7 @@
                     "400": {
                         "description": "Invalid input",
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Invalid input data"
-                                }
-                            }
+                            "href": "#/definitions/InvalidParamsResponse"
                         }
                     },
                     "500": {
@@ -114,6 +108,53 @@
                         }
                     }
                 }
+            },
+            "patch": {
+                "summary": "Update user by ID",
+                "tags": ["Users"],
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID of the user to update"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CreateUserParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidParamsResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/UserNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/InternalServerErrorResponse"
+                        }
+                    }
+                }
             }
         }
     },
@@ -161,6 +202,15 @@
                 "password": {
                     "type": "string",
                     "example": "password123"
+                }
+            }
+        },
+        "InvalidParamsResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Invalid input data"
                 }
             }
         },
