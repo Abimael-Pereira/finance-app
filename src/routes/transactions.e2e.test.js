@@ -3,6 +3,7 @@ import { app } from '../app.js';
 import { user, transactionWithoutId } from '../tests/index.js';
 import dayjs from 'dayjs';
 import dayjsPluginUTC from 'dayjs-plugin-utc';
+import { faker } from '@faker-js/faker';
 
 dayjs.extend(dayjsPluginUTC);
 
@@ -117,5 +118,15 @@ describe('TransactionsRoutes E2E Tests', () => {
         expect(dayjs(response.body.date).date()).toBe(
             dayjs(createdTransaction.date).date(),
         );
+    });
+
+    it('PATCH /api/transactions/:transactionId should return 404 when transaction does not exist', async () => {
+        const transactionId = faker.string.uuid();
+        const response = await request(app)
+            .patch(`/api/transactions/${transactionId}`)
+            .send({ name: 'Updated Transaction' });
+
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe('Transaction not found.');
     });
 });
