@@ -7,6 +7,7 @@ import {
 } from '../../../tests/';
 import { PostgresUpdateTransactionRepository } from './update-transaction';
 import { faker } from '@faker-js/faker';
+import { TransactionNotFoundError } from '../../../errors';
 
 describe('UpdateTransactionRepository', () => {
     const paramsUpdate = {
@@ -75,5 +76,14 @@ describe('UpdateTransactionRepository', () => {
         const result = sut.execute(transaction.id, paramsUpdate);
 
         await expect(result).rejects.toThrow();
+    });
+
+    it('should throw if transaction does not exist', async () => {
+        const transactionId = faker.string.uuid();
+        const sut = new PostgresUpdateTransactionRepository();
+
+        await expect(sut.execute(transactionId, paramsUpdate)).rejects.toThrow(
+            new TransactionNotFoundError(transactionId),
+        );
     });
 });
