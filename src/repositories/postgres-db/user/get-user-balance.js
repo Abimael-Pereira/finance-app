@@ -43,9 +43,9 @@ export class PostgresGetUserBalanceRepository {
             totalEarnings - totalExpenses - totalInvestments,
         );
         return {
-            earnings: totalEarnings,
-            expenses: totalExpenses,
-            investments: totalInvestments,
+            earnings: totalEarnings === null ? '0' : totalEarnings,
+            expenses: totalExpenses === null ? '0' : totalExpenses,
+            investments: totalInvestments === null ? '0' : totalInvestments,
             balance,
         };
     }
