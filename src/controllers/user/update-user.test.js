@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { UpdateUserController } from './update-user';
 import { ZodError } from 'zod';
-import { EmailAlreadyInUseError } from '../../errors/user';
+import { EmailAlreadyInUseError, UserNotFoundError } from '../../errors/user';
 import { createOrUpdateUserParams } from '../../tests';
 
 describe('UpdateUserController', () => {
@@ -130,5 +130,20 @@ describe('UpdateUserController', () => {
             httpRequest.params.userId,
             httpRequest.body,
         );
+    });
+
+    it('should throw UserNotFoundError if user is not found', async () => {
+        const { updateUserController, updateUserUseCase } = makeSut();
+
+        jest.spyOn(updateUserUseCase, 'execute').mockRejectedValue(
+            new UserNotFoundError(faker.string.uuid()),
+        );
+
+        const result = await updateUserController.execute(httpRequest);
+
+        expect(result.statusCode).toBe(404);
+        expect(result.body).toEqual({
+            message: 'User not found.',
+        });
     });
 });

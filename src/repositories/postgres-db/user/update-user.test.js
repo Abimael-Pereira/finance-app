@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { prisma } from '../../../../prisma/prisma';
 import { user as fakeUser } from '../../../tests';
 import { PostgresUpdateUserRepository } from './update-user';
+import { UserNotFoundError } from '../../../errors';
 
 describe('UpdateUserRepository', () => {
     const updateUserParams = {
@@ -46,5 +47,15 @@ describe('UpdateUserRepository', () => {
         const promisse = sut.execute(fakeUser.id, updateUserParams);
 
         await expect(promisse).rejects.toThrow();
+    });
+
+    it('should throw UserNotFoundError if user does not exist', async () => {
+        const sut = new PostgresUpdateUserRepository();
+
+        const userId = faker.string.uuid();
+
+        const promisse = sut.execute(userId, updateUserParams);
+
+        await expect(promisse).rejects.toThrow(new UserNotFoundError(userId));
     });
 });
