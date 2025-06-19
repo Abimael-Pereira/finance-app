@@ -127,4 +127,16 @@ describe('UserRoutes E2E Tests', () => {
             message: 'User not found.',
         });
     });
+
+    it('PATCH /api/users/:userId should return 404 when user is not found', async () => {
+        const nonExistentUserId = faker.string.uuid();
+        const response = await request(app)
+            .patch(`/api/users/${nonExistentUserId}`)
+            .send({ first_name: 'Updated' });
+
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({
+            message: 'User not found.',
+        });
+    });
 });
