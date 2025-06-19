@@ -121,10 +121,18 @@ describe('TransactionsRoutes E2E Tests', () => {
     });
 
     it('PATCH /api/transactions/:transactionId should return 404 when transaction does not exist', async () => {
-        const transactionId = faker.string.uuid();
         const response = await request(app)
-            .patch(`/api/transactions/${transactionId}`)
+            .patch(`/api/transactions/${faker.string.uuid()}`)
             .send({ name: 'Updated Transaction' });
+
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe('Transaction not found.');
+    });
+
+    it('DELETE /api/transactions/:transactionId should return 404 when transaction does not exist', async () => {
+        const response = await request(app).delete(
+            `/api/transactions/${faker.string.uuid()}`,
+        );
 
         expect(response.status).toBe(404);
         expect(response.body.message).toBe('Transaction not found.');
