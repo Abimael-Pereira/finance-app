@@ -127,7 +127,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/CreateUserParams"
+                            "$ref": "#/definitions/UpdateUserParams"
                         }
                     }
                 ],
@@ -299,30 +299,7 @@
                         "required": true,
                         "in": "body",
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "example": "salary"
-                                },
-                                "date": {
-                                    "type": "string",
-                                    "example": "2025-06-02T00:00:00.000Z"
-                                },
-                                "amount": {
-                                    "type": "number",
-                                    "example": "2000"
-                                },
-                                "type": {
-                                    "type": "string",
-                                    "enum": [
-                                        "EARNING",
-                                        "EXPENSE",
-                                        "INVESTMENT"
-                                    ],
-                                    "example": "EARNING"
-                                }
-                            }
+                            "$ref": "#/definitions/UpdateTransactionParams"
                         },
                         "description": "Transaction fields to be update"
                     }
@@ -450,19 +427,48 @@
             "properties": {
                 "first_name": {
                     "type": "string",
-                    "example": "John"
+                    "example": "John",
+                    "required": true
                 },
                 "last_name": {
                     "type": "string",
-                    "example": "Doe"
+                    "example": "Doe",
+                    "required": true
                 },
                 "email": {
                     "type": "string",
-                    "example": "john@doe.com"
+                    "example": "john@doe.com",
+                    "required": true
                 },
                 "password": {
                     "type": "string",
-                    "example": "password123"
+                    "example": "password123",
+                    "required": true
+                }
+            }
+        },
+        "UpdateUserParams": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string",
+                    "example": "John",
+                    "required": false
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Doe",
+                    "required": false
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john@doe.com",
+                    "required": false
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password123",
+                    "required": false
                 }
             }
         },
@@ -501,24 +507,55 @@
             "properties": {
                 "userId": {
                     "type": "string",
-                    "example": "4ab74eaf-ae90-4c92-bdf0-35bf0c574fe1"
+                    "example": "4ab74eaf-ae90-4c92-bdf0-35bf0c574fe1",
+                    "required": true
                 },
                 "name": {
                     "type": "string",
-                    "example": "salary"
+                    "example": "salary",
+                    "required": true
                 },
                 "date": {
                     "type": "string",
-                    "example": "2025-06-02T00:00:00.000Z"
+                    "example": "2025-06-02T00:00:00.000Z",
+                    "required": true
                 },
                 "amount": {
                     "type": "number",
-                    "example": "2000"
+                    "example": "2000",
+                    "required": true
                 },
                 "type": {
                     "type": "string",
                     "enum": ["EARNING", "EXPENSE", "INVESTMENT"],
-                    "example": "EARNING"
+                    "example": "EARNING",
+                    "required": true
+                }
+            }
+        },
+        "UpdateTransactionParams": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "salary",
+                    "required": false
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2025-06-02T00:00:00.000Z",
+                    "required": false
+                },
+                "amount": {
+                    "type": "number",
+                    "example": "2000",
+                    "required": false
+                },
+                "type": {
+                    "type": "string",
+                    "enum": ["EARNING", "EXPENSE", "INVESTMENT"],
+                    "example": "EARNING",
+                    "required": false
                 }
             }
         },
