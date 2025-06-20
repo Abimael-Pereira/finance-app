@@ -29,12 +29,9 @@ export class GetTransactionsByUserIdController {
 
             return ok(transactions);
         } catch (error) {
-            console.log(error);
-
             if (error instanceof UserNotFoundError) {
                 return userNotFoundResponse();
             }
-
             return serverError();
         }
     }
