@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { app } from '../app.js';
+import { app } from '../app.cjs';
 import { user, transactionWithoutId } from '../tests/index.js';
 import dayjs from 'dayjs';
 import dayjsPluginUTC from 'dayjs-plugin-utc';
