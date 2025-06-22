@@ -8,7 +8,7 @@ export const transaction = {
     name: faker.commerce.productName(),
     date: faker.date.recent().toISOString(),
     type: faker.helpers.arrayElement(typesOfTransaction),
-    amount: Number(faker.finance.amount()),
+    amount: Number(faker.finance.amount({ min: 1 })),
 };
 
 export const transactionWithoutId = {
@@ -16,12 +16,12 @@ export const transactionWithoutId = {
     name: faker.commerce.productName(),
     date: faker.date.recent().toISOString(),
     type: faker.helpers.arrayElement(typesOfTransaction),
-    amount: Number(faker.finance.amount()),
+    amount: Number(faker.finance.amount({ min: 1 })),
 };
 
 export const updateTransactionParams = {
     name: faker.commerce.productName(),
     date: faker.date.recent().toISOString(),
     type: faker.helpers.arrayElement(typesOfTransaction),
-    amount: Number(faker.finance.amount()),
+    amount: Number(faker.finance.amount({ min: 1 })),
 };
