@@ -33,17 +33,28 @@ describe('CreateUserUseCase', () => {
         }
     }
 
+    class TokensGeneratorAdapterStub {
+        execute() {
+            return {
+                accessToken: 'any_access_token',
+                refreshToken: 'any_refresh_token',
+            };
+        }
+    }
+
     const makeSut = () => {
         const createUserRepository = new CreateUserRepositoryStub();
         const getUserByEmailRepository = new GetUserByEmailRepositoryStub();
         const passwordHasherAdapter = new PasswordHasherAdapterStub();
         const idGeneratorAdapter = new IdGeneratorAdapterStub();
+        const tokensGeneratorAdapter = new TokensGeneratorAdapterStub();
 
         const createUserUseCase = new CreateUserUseCase(
             createUserRepository,
             getUserByEmailRepository,
             passwordHasherAdapter,
             idGeneratorAdapter,
+            tokensGeneratorAdapter,
         );
 
         return {
@@ -52,6 +63,7 @@ describe('CreateUserUseCase', () => {
             getUserByEmailRepository,
             passwordHasherAdapter,
             idGeneratorAdapter,
+            tokensGeneratorAdapter,
         };
     };
 
@@ -77,6 +89,10 @@ describe('CreateUserUseCase', () => {
             ...createUserParams,
             id: 'generated_id',
             password: `hashed_${createUserParams.password}`,
+            tokens: {
+                accessToken: 'any_access_token',
+                refreshToken: 'any_refresh_token',
+            },
         });
     });
 

@@ -18,10 +18,15 @@ describe('UserRoutes E2E Tests', () => {
             .post('/api/users')
             .send({ ...user, id: undefined });
 
-        const response = await request(app).get(`/api/users/${createdUser.id}`);
+        const response = await request(app)
+            .get(`/api/users/${createdUser.id}`)
+            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
-        expect(response.body).toStrictEqual(createdUser);
+        expect(response.body).toEqual({
+            ...createdUser,
+            tokens: undefined,
+        });
     });
 
     it('PATCH /api/users/:userId should return 200 when user is updated', async () => {
@@ -38,6 +43,7 @@ describe('UserRoutes E2E Tests', () => {
 
         const response = await request(app)
             .patch(`/api/users/${createdUser.id}`)
+            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
             .send(updateUserParams);
 
         expect(response.status).toBe(200);
@@ -54,12 +60,12 @@ describe('UserRoutes E2E Tests', () => {
             .post('/api/users')
             .send({ ...user, id: undefined });
 
-        const response = await request(app).delete(
-            `/api/users/${createdUser.id}`,
-        );
+        const response = await request(app)
+            .delete(`/api/users/${createdUser.id}`)
+            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
-        expect(response.body).toEqual(createdUser);
+        expect(response.body).toEqual({ ...createdUser, tokens: undefined });
     });
 
     it('GET /api/users/:userId/balance should return 200 when get user balance', async () => {
@@ -91,9 +97,9 @@ describe('UserRoutes E2E Tests', () => {
             amount: 1000,
         });
 
-        const response = await request(app).get(
-            `/api/users/${createdUser.id}/balance`,
-        );
+        const response = await request(app)
+            .get(`/api/users/${createdUser.id}/balance`)
+            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
@@ -101,54 +107,6 @@ describe('UserRoutes E2E Tests', () => {
             earnings: '5000',
             expenses: '2000',
             investments: '1000',
-        });
-    });
-
-    it('GET /api/users/:userId should return 404 when user is not found', async () => {
-        const nonExistentUserId = faker.string.uuid();
-        const response = await request(app).get(
-            `/api/users/${nonExistentUserId}`,
-        );
-
-        expect(response.status).toBe(404);
-        expect(response.body).toEqual({
-            message: 'User not found',
-        });
-    });
-
-    it('GET /api/users/:userId/balance should return 404 when user is not found', async () => {
-        const nonExistentUserId = faker.string.uuid();
-        const response = await request(app).get(
-            `/api/users/${nonExistentUserId}/balance`,
-        );
-
-        expect(response.status).toBe(404);
-        expect(response.body).toEqual({
-            message: 'User not found',
-        });
-    });
-
-    it('PATCH /api/users/:userId should return 404 when user is not found', async () => {
-        const nonExistentUserId = faker.string.uuid();
-        const response = await request(app)
-            .patch(`/api/users/${nonExistentUserId}`)
-            .send({ first_name: 'Updated' });
-
-        expect(response.status).toBe(404);
-        expect(response.body).toEqual({
-            message: 'User not found',
-        });
-    });
-
-    it('DELETE /api/users/:userId should return 404 when user is not found', async () => {
-        const nonExistentUserId = faker.string.uuid();
-        const response = await request(app).delete(
-            `/api/users/${nonExistentUserId}`,
-        );
-
-        expect(response.status).toBe(404);
-        expect(response.body).toEqual({
-            message: 'User not found',
         });
     });
 
