@@ -53,3 +53,27 @@ export const updateUserSchema = createUserSchema
             message: 'At least one field must be provided for update.',
         },
     );
+
+export const loginSchema = z.object({
+    email: z
+        .string({
+            required_error: 'Email is required.',
+            invalid_type_error: 'Email must be a string.',
+        })
+        .email({
+            message: 'Please, provide a valid email.',
+        })
+        .trim()
+        .min(1, {
+            message: 'Email is required.',
+        }),
+    password: z
+        .string({
+            required_error: 'Password is required.',
+            invalid_type_error: 'Password must be a string.',
+        })
+        .trim()
+        .min(6, {
+            message: 'Password must have at least 6 characters',
+        }),
+});
