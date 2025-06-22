@@ -166,4 +166,30 @@ describe('UserRoutes E2E Tests', () => {
             message: `The e-mail ${user.email} is already in use`,
         });
     });
+
+    it('POST /api/users/login should return 200 when user logs in successfully', async () => {
+        await request(app)
+            .post('/api/users')
+            .send({ ...user, id: undefined });
+
+        const response = await request(app).post('/api/users/login').send({
+            email: user.email,
+            password: user.password,
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.body.tokens.accessToken).toBeDefined();
+        expect(response.body.tokens.refreshToken).toBeDefined();
+        expect(response.body).toEqual({
+            id: expect.any(String),
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            password: expect.any(String),
+            tokens: {
+                accessToken: expect.any(String),
+                refreshToken: expect.any(String),
+            },
+        });
+    });
 });
