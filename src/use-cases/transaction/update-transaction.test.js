@@ -8,11 +8,20 @@ describe('UpdateTransactionUseCase', () => {
         }
     }
 
+    class GetTransactionByIdRepositoryStub {
+        async execute(transactionId) {
+            return { ...transaction, id: transactionId };
+        }
+    }
+
     const makeSut = () => {
         const updateTransactionRepository =
             new UpdateTransactionRepositoryStub();
+        const getTransactionByIdRepository =
+            new GetTransactionByIdRepositoryStub();
         const updateTransactionUseCase = new UpdateTransactionUseCase(
             updateTransactionRepository,
+            getTransactionByIdRepository,
         );
 
         return { updateTransactionRepository, updateTransactionUseCase };
@@ -23,6 +32,7 @@ describe('UpdateTransactionUseCase', () => {
 
         const result = await updateTransactionUseCase.execute(
             transaction.id,
+            transaction.userId,
             transaction,
         );
 
@@ -38,7 +48,11 @@ describe('UpdateTransactionUseCase', () => {
             'execute',
         );
 
-        await updateTransactionUseCase.execute(transaction.id, transaction);
+        await updateTransactionUseCase.execute(
+            transaction.id,
+            transaction.userId,
+            transaction,
+        );
 
         expect(updateTransactionSpy).toHaveBeenCalledWith(
             transaction.id,

@@ -110,12 +110,18 @@ describe('UpdateTransactionController', () => {
         const { updateTransactionController, updateTransactionUseCase } =
             makeSut();
 
+        const userId = faker.string.uuid();
+
         const useCase = jest.spyOn(updateTransactionUseCase, 'execute');
 
-        await updateTransactionController.execute(httpRequest);
+        await updateTransactionController.execute({
+            ...httpRequest,
+            params: { ...httpRequest.params, userId },
+        });
 
         expect(useCase).toHaveBeenCalledWith(
             httpRequest.params.transactionId,
+            userId,
             httpRequest.body,
         );
     });
