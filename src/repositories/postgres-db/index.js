@@ -5,6 +5,7 @@ export * from './user/get-user-by-id.js';
 export * from './user/update-user.js';
 export * from './transaction/create-transaction.js';
 export * from './transaction/get-transactions-by-userid.js';
+export * from './transaction/get-transaction-by-id.js';
 export * from './transaction/update-transaction.js';
 export * from './transaction/delete-transaction.js';
 export * from './user/get-user-balance.js';

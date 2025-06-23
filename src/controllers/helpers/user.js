@@ -1,4 +1,4 @@
-import { notFound, unauthorized } from './index.js';
+import { forbidden, notFound, unauthorized } from './index.js';
 
 export const userNotFoundResponse = () => {
     return notFound({
@@ -9,5 +9,11 @@ export const userNotFoundResponse = () => {
 export const invalidPasswordResponse = () => {
     return unauthorized({
         message: 'Invalid password',
+    });
+};
+
+export const forbiddenResponse = () => {
+    return forbidden({
+        message: 'Forbidden',
     });
 };

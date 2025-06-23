@@ -1,3 +1,13 @@
+export const ok = (body) => ({
+    statusCode: 200,
+    body,
+});
+
+export const created = (body) => ({
+    statusCode: 201,
+    body,
+});
+
 export const badRequest = (body) => ({
     statusCode: 400,
     body,
@@ -8,8 +18,13 @@ export const unauthorized = (body) => ({
     body,
 });
 
-export const created = (body) => ({
-    statusCode: 201,
+export const forbidden = (body) => ({
+    statusCode: 403,
+    body,
+});
+
+export const notFound = (body) => ({
+    statusCode: 404,
     body,
 });
 
@@ -18,14 +33,4 @@ export const serverError = () => ({
     body: {
         message: 'Internal server error',
     },
-});
-
-export const ok = (body) => ({
-    statusCode: 200,
-    body,
-});
-
-export const notFound = (body) => ({
-    statusCode: 404,
-    body,
 });

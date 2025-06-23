@@ -3,12 +3,14 @@ import { updateTransactionSchema } from '../../schemas/index.js';
 import {
     badRequest,
     checkIfIdIsValid,
+    forbiddenResponse,
     invalidIdResponse,
     ok,
     serverError,
     transactionNotFoundResponse,
 } from '../helpers/index.js';
 import { TransactionNotFoundError } from '../../errors/transaction.js';
+import { ForbiddenError } from '../../errors/user.js';
 
 export class UpdateTransactionController {
     constructor(updateTransactionUseCase) {
@@ -23,17 +25,20 @@ export class UpdateTransactionController {
                 return invalidIdResponse();
             }
 
-            const params = httpRequest.body;
+            const updateTransactionParams = httpRequest.body;
 
-            await updateTransactionSchema.parseAsync(params);
+            await updateTransactionSchema.parseAsync(updateTransactionParams);
 
             const transaction = await this.updateTransactionUseCase.execute(
                 httpRequest.params.transactionId,
-                params,
+                httpRequest.params.userId,
+                updateTransactionParams,
             );
 
             return ok(transaction);
         } catch (error) {
+            console.log(error);
+
             if (error instanceof ZodError) {
                 return badRequest(error.errors[0].message);
             }
@@ -42,7 +47,9 @@ export class UpdateTransactionController {
                 return transactionNotFoundResponse();
             }
 
-            console.log(error);
+            if (error instanceof ForbiddenError) {
+                return forbiddenResponse();
+            }
 
             return serverError();
         }
