@@ -13,13 +13,13 @@ describe('UserRoutes E2E Tests', () => {
         expect(response.status).toBe(201);
     });
 
-    it('GET /api/user/:userId should return 200 when user is found', async () => {
+    it('GET /api/user should return 200 when user is found', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({ ...user, id: undefined });
 
         const response = await request(app)
-            .get(`/api/users/${createdUser.id}`)
+            .get('/api/users')
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
@@ -29,7 +29,7 @@ describe('UserRoutes E2E Tests', () => {
         });
     });
 
-    it('PATCH /api/users/:userId should return 200 when user is updated', async () => {
+    it('PATCH /api/users should return 200 when user is updated', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({ ...user, id: undefined });
@@ -42,7 +42,7 @@ describe('UserRoutes E2E Tests', () => {
         };
 
         const response = await request(app)
-            .patch(`/api/users/${createdUser.id}`)
+            .patch('/api/users')
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
             .send(updateUserParams);
 
@@ -55,20 +55,20 @@ describe('UserRoutes E2E Tests', () => {
         expect(response.body.password).not.toBe(updateUserParams.password);
     });
 
-    it('DELETE /api/users/:userId should return 200 when user is deleted', async () => {
+    it('DELETE /api/users should return 200 when user is deleted', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({ ...user, id: undefined });
 
         const response = await request(app)
-            .delete(`/api/users/${createdUser.id}`)
+            .delete('/api/users')
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ ...createdUser, tokens: undefined });
     });
 
-    it('GET /api/users/:userId/balance should return 200 when get user balance', async () => {
+    it('GET /api/users/balance should return 200 when get user balance', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({ ...user, id: undefined });
@@ -98,7 +98,7 @@ describe('UserRoutes E2E Tests', () => {
         });
 
         const response = await request(app)
-            .get(`/api/users/${createdUser.id}/balance`)
+            .get('/api/users/balance')
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
