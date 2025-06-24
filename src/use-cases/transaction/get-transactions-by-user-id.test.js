@@ -67,9 +67,23 @@ describe('GetTransactionsByUserId', () => {
             'execute',
         );
 
-        await getTransactionsByUserIdUseCase.execute(user.id);
+        const queryParams = {
+            userId: user.id,
+            from: new Date('2023-01-01'),
+            to: new Date('2023-12-31'),
+        };
 
-        expect(getTransactionSpy).toHaveBeenCalledWith(user.id);
+        await getTransactionsByUserIdUseCase.execute(
+            user.id,
+            queryParams.from,
+            queryParams.to,
+        );
+
+        expect(getTransactionSpy).toHaveBeenCalledWith(
+            user.id,
+            queryParams.from,
+            queryParams.to,
+        );
     });
 
     it('should call GetUserByIdRepository with correct params', async () => {

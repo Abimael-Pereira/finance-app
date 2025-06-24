@@ -119,6 +119,10 @@ describe('GetTransactionsByUserIdController', () => {
             query: queryParams,
         });
 
-        expect(executeSpy).toHaveBeenCalledWith(queryParams.userId);
+        expect(executeSpy).toHaveBeenCalledWith(
+            queryParams.userId,
+            queryParams.from,
+            queryParams.to,
+        );
     });
 });
