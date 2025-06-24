@@ -17,3 +17,9 @@ export const forbiddenResponse = () => {
         message: 'Forbidden',
     });
 };
+
+export const unauthorizedResponse = () => {
+    return unauthorized({
+        message: 'Unauthorized',
+    });
+};
