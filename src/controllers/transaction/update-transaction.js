@@ -37,8 +37,6 @@ export class UpdateTransactionController {
 
             return ok(transaction);
         } catch (error) {
-            console.log(error);
-
             if (error instanceof ZodError) {
                 return badRequest(error.errors[0].message);
             }

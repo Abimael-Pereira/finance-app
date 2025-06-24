@@ -50,3 +50,33 @@ export const updateTransactionSchema = createTransactionSchema
             message: 'At least one field must be provided for update.',
         },
     );
+
+export const getTransactionByUserIdSchema = z
+    .object({
+        userId: z.string().uuid({
+            message: 'User ID must be a valid UUID',
+            invalid_type_error: 'User ID must be a string',
+            required_error: 'User ID is required',
+        }),
+        from: z.string().date({
+            message: 'From date must be a valid date string',
+            invalid_type_error: 'From date must be a string',
+            required_error: 'From date is required',
+        }),
+        to: z.string().date({
+            message: 'To date must be a valid date string',
+            invalid_type_error: 'To date must be a string',
+            required_error: 'To date is required',
+        }),
+    })
+    .refine(
+        (data) => {
+            if (data.from && data.to) {
+                return new Date(data.from) <= new Date(data.to);
+            }
+            return true;
+        },
+        {
+            message: 'From date must be earlier than or equal to To date.',
+        },
+    );
