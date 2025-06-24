@@ -28,41 +28,38 @@ describe('GetTransactionsByUserIdController', () => {
         };
     };
 
+    const queryParams = {
+        userId: faker.string.uuid(),
+        from: '2025-01-01',
+        to: '2025-12-31',
+    };
+
     it('should return 200 when finding transaction by user id successfully', async () => {
         const { getTransactionsByUserIdController } = makeSut();
 
         const result = await getTransactionsByUserIdController.execute({
-            query: { userId: faker.string.uuid() },
+            query: queryParams,
         });
 
         expect(result.statusCode).toBe(200);
         expect(result.body).toEqual([body]);
     });
 
-    it('should return 400 when user id in query is missing', async () => {
+    it('should return 400 when the zod parsing schema throws ZodError', async () => {
         const { getTransactionsByUserIdController } = makeSut();
 
+        const invalidQueryParams = {
+            userId: 'invalid-uuid',
+            from: 'invalid-date',
+            to: 'invalid-date',
+        };
+
         const result = await getTransactionsByUserIdController.execute({
-            query: { userId: null },
+            query: invalidQueryParams,
         });
 
         expect(result.statusCode).toBe(400);
-        expect(result.body).toEqual({
-            message: 'The field userID is required',
-        });
-    });
-
-    it('should return 400 when user id is invalid', async () => {
-        const { getTransactionsByUserIdController } = makeSut();
-
-        const result = await getTransactionsByUserIdController.execute({
-            query: { userId: 'invalid_id' },
-        });
-
-        expect(result.statusCode).toBe(400);
-        expect(result.body).toEqual({
-            message: 'The provided id is not valid',
-        });
+        expect(result.body).toEqual('User ID must be a valid UUID');
     });
 
     it('should return 404 when GetUserByIdUseCase throws UserNotFoundError', async () => {
@@ -77,7 +74,7 @@ describe('GetTransactionsByUserIdController', () => {
         ).mockRejectedValueOnce(new UserNotFoundError());
 
         const result = await getTransactionsByUserIdController.execute({
-            query: { userId: faker.string.uuid() },
+            query: queryParams,
         });
 
         expect(result.statusCode).toBe(404);
@@ -98,7 +95,7 @@ describe('GetTransactionsByUserIdController', () => {
         ).mockRejectedValueOnce(new Error());
 
         const result = await getTransactionsByUserIdController.execute({
-            query: { userId: faker.string.uuid() },
+            query: queryParams,
         });
 
         expect(result.statusCode).toBe(500);
@@ -107,22 +104,21 @@ describe('GetTransactionsByUserIdController', () => {
         });
     });
 
-    it('should call GetTransactionsByUserIdUseCase with correct userId', async () => {
+    it('should call GetTransactionsByUserIdUseCase with correct params', async () => {
         const {
             getTransactionsByUserIdController,
             getTransactionsByUserIdUseCase,
         } = makeSut();
 
-        const userId = faker.string.uuid();
         const executeSpy = jest.spyOn(
             getTransactionsByUserIdUseCase,
             'execute',
         );
 
         await getTransactionsByUserIdController.execute({
-            query: { userId },
+            query: queryParams,
         });
 
-        expect(executeSpy).toHaveBeenCalledWith(userId);
+        expect(executeSpy).toHaveBeenCalledWith(queryParams.userId);
     });
 });

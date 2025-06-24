@@ -8,26 +8,6 @@ import { faker } from '@faker-js/faker';
 dayjs.extend(dayjsPluginUTC);
 
 describe('TransactionsRoutes E2E Tests', () => {
-    it('POST /api/transactions should return 201 when creating a transaction successfully', async () => {
-        const { body: createdUser } = await request(app)
-            .post('/api/users')
-            .send({ ...user, id: undefined });
-
-        const response = await request(app)
-            .post('/api/transactions')
-            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
-            .send(transactionWithoutId);
-
-        expect(response.status).toBe(201);
-        expect(response.body.userId).toBe(createdUser.id);
-        expect(response.body.type).toBe(transactionWithoutId.type);
-        expect(response.body.amount).toBe(String(transactionWithoutId.amount));
-        expect(response.body.name).toBe(transactionWithoutId.name);
-        expect(dayjs(response.body).date()).toBe(
-            dayjs(transactionWithoutId).date(),
-        );
-    });
-
     it('GET /api/transactions should return 200 when fetching transactions successfully', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
@@ -42,6 +22,8 @@ describe('TransactionsRoutes E2E Tests', () => {
             .get('/api/transactions')
             .query({
                 userId: createdUser.id,
+                from: '2025-01-01',
+                to: '2025-12-31',
             })
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
@@ -104,6 +86,46 @@ describe('TransactionsRoutes E2E Tests', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.id).toBe(createdTransaction.id);
+    });
+
+    it('POST /api/transactions should return 201 when creating a transaction successfully', async () => {
+        const { body: createdUser } = await request(app)
+            .post('/api/users')
+            .send({ ...user, id: undefined });
+
+        const response = await request(app)
+            .post('/api/transactions')
+            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
+            .send(transactionWithoutId);
+
+        expect(response.status).toBe(201);
+        expect(response.body.userId).toBe(createdUser.id);
+        expect(response.body.type).toBe(transactionWithoutId.type);
+        expect(response.body.amount).toBe(String(transactionWithoutId.amount));
+        expect(response.body.name).toBe(transactionWithoutId.name);
+        expect(dayjs(response.body).date()).toBe(
+            dayjs(transactionWithoutId).date(),
+        );
+    });
+
+    it('GET /api/transactions should return 400 when queryParams is invalid', async () => {
+        const { body: createdUser } = await request(app)
+            .post('/api/users')
+            .send({ ...user, id: undefined });
+
+        const response = await request(app)
+            .get('/api/transactions')
+            .query({
+                userId: createdUser.id,
+                from: 'invalid-date',
+                to: '2025-12-31',
+            })
+            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe(
+            'From date must be a valid date string',
+        );
     });
 
     it('PATCH /api/transactions/:transactionId should return 404 when transaction does not exist', async () => {
