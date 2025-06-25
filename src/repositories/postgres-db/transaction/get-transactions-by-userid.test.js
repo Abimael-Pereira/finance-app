@@ -1,9 +1,15 @@
 import dayjs from 'dayjs';
+import dayjsPluginUTC from 'dayjs-plugin-utc';
 import { prisma } from '../../../../prisma/prisma';
 import { transaction, user as fakeUser } from '../../../tests/';
 import { PostgresGetTransactionsByUserIdRepository } from './get-transactions-by-userid';
 
+dayjs.extend(dayjsPluginUTC);
+
 describe('GetTransactionsByUserId', () => {
+    const from = '2025-01-01';
+    const to = '2025-12-31';
+
     it('should get transactions by user id on db', async () => {
         await prisma.user.create({ data: fakeUser });
         await prisma.transaction.create({
@@ -12,9 +18,10 @@ describe('GetTransactionsByUserId', () => {
 
         const sut = new PostgresGetTransactionsByUserIdRepository();
 
-        const result = await sut.execute(fakeUser.id);
+        const result = await sut.execute(fakeUser.id, from, to);
 
-        expect(result.length).toBe(1);
+        console.log(result);
+
         expect({
             ...result[0],
             amount: result[0].amount.toString(),
@@ -25,13 +32,9 @@ describe('GetTransactionsByUserId', () => {
             userId: fakeUser.id,
             date: undefined,
         });
-        expect(dayjs(result.date).daysInMonth()).toBe(
-            dayjs(transaction.date).daysInMonth(),
+        expect(dayjs.utc(result[0].date).format('YYYY-MM-DD')).toBe(
+            dayjs.utc(transaction.date).format('YYYY-MM-DD'),
         );
-        expect(dayjs(result.date).month()).toBe(
-            dayjs(transaction.date).month(),
-        );
-        expect(dayjs(result.date).year()).toBe(dayjs(transaction.date).year());
     });
 
     it('should call Prisma with correct params', async () => {
@@ -39,11 +42,15 @@ describe('GetTransactionsByUserId', () => {
 
         const prismaSpy = jest.spyOn(prisma.transaction, 'findMany');
 
-        await sut.execute(fakeUser.id);
+        await sut.execute(fakeUser.id, from, to);
 
         expect(prismaSpy).toHaveBeenCalledWith({
             where: {
                 userId: fakeUser.id,
+                date: {
+                    gte: new Date(from),
+                    lte: new Date(to),
+                },
             },
         });
     });

@@ -18,13 +18,11 @@ describe('TransactionsRoutes E2E Tests', () => {
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
             .send(transactionWithoutId);
 
+        const from = '2025-01-01';
+        const to = '2025-12-31';
+
         const response = await request(app)
-            .get('/api/transactions')
-            .query({
-                userId: createdUser.id,
-                from: '2025-01-01',
-                to: '2025-12-31',
-            })
+            .get(`/api/transactions?from=${from}&to=${to}`)
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
@@ -35,8 +33,8 @@ describe('TransactionsRoutes E2E Tests', () => {
             String(transactionWithoutId.amount),
         );
         expect(response.body[0].name).toBe(transactionWithoutId.name);
-        expect(dayjs(response.body[0].date).date()).toBe(
-            dayjs(transactionWithoutId.date).date(),
+        expect(dayjs.utc(response.body[0].date).format('YYYY-MM-DD')).toBe(
+            dayjs.utc(transactionWithoutId.date).format('YYYY-MM-DD'),
         );
     });
 
@@ -65,8 +63,8 @@ describe('TransactionsRoutes E2E Tests', () => {
         expect(response.body.type).toBe(createdTransaction.type);
         expect(response.body.amount).toBe(String(createdTransaction.amount));
         expect(response.body.name).toBe(updatedTransaction.name);
-        expect(dayjs(response.body.date).date()).toBe(
-            dayjs(createdTransaction.date).date(),
+        expect(dayjs.utc(response.body.date).format('YYYY-MM-DD')).toBe(
+            dayjs.utc(transactionWithoutId.date).format('YYYY-MM-DD'),
         );
     });
 
@@ -103,8 +101,8 @@ describe('TransactionsRoutes E2E Tests', () => {
         expect(response.body.type).toBe(transactionWithoutId.type);
         expect(response.body.amount).toBe(String(transactionWithoutId.amount));
         expect(response.body.name).toBe(transactionWithoutId.name);
-        expect(dayjs(response.body).date()).toBe(
-            dayjs(transactionWithoutId).date(),
+        expect(dayjs.utc(response.body.date).format('YYYY-MM-DD')).toBe(
+            dayjs.utc(transactionWithoutId.date).format('YYYY-MM-DD'),
         );
     });
 
