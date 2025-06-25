@@ -1,8 +1,11 @@
 import dayjs from 'dayjs';
+import dayjsPluginUTC from 'dayjs-plugin-utc';
 import { prisma } from '../../../../prisma/prisma.js';
 import { transaction, user } from '../../../tests/';
 import { PostgresDeleteTransactionRepository } from './delete-transaction';
 import { TransactionNotFoundError } from '../../../errors/';
+
+dayjs.extend(dayjsPluginUTC);
 
 describe('DeleteTransactionRepository', () => {
     it('should delete a transaction on db', async () => {
@@ -25,13 +28,9 @@ describe('DeleteTransactionRepository', () => {
             userId: user.id,
             date: undefined,
         });
-        expect(dayjs(result.date).daysInMonth()).toBe(
-            dayjs(transaction.date).daysInMonth(),
+        expect(dayjs.utc(result.date).format('YYYY-MM-DD')).toBe(
+            dayjs.utc(transaction.date).format('YYYY-MM-DD'),
         );
-        expect(dayjs(result.date).month()).toBe(
-            dayjs(transaction.date).month(),
-        );
-        expect(dayjs(result.date).year()).toBe(dayjs(transaction.date).year());
     });
 
     it('shoul call prisma with correct params', async () => {
