@@ -80,3 +80,16 @@ export const getTransactionByUserIdSchema = z
             message: 'From date must be earlier than or equal to To date.',
         },
     );
+
+export const deleteTransactionSchema = z.object({
+    transactionId: z.string().uuid({
+        message: 'Transaction ID must be a valid UUID',
+        invalid_type_error: 'Transaction ID must be a string',
+        required_error: 'Transaction ID is required',
+    }),
+    userId: z.string().uuid({
+        message: 'User ID must be a valid UUID',
+        invalid_type_error: 'User ID must be a string',
+        required_error: 'User ID is required',
+    }),
+});
