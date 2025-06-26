@@ -119,6 +119,9 @@ describe('UserRoutes E2E Tests', () => {
             earnings: '5000',
             expenses: '2000',
             investments: '1000',
+            earningsPercentage: '62',
+            expensesPercentage: '25',
+            investmentsPercentage: '12',
         });
     });
 
