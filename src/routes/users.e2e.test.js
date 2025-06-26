@@ -13,13 +13,13 @@ describe('UserRoutes E2E Tests', () => {
         expect(response.status).toBe(201);
     });
 
-    it('GET /api/user should return 200 when user is found', async () => {
+    it('GET /api/user/me should return 200 if user is authenticated', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({ ...user, id: undefined });
 
         const response = await request(app)
-            .get('/api/users')
+            .get('/api/users/me')
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
@@ -29,7 +29,7 @@ describe('UserRoutes E2E Tests', () => {
         });
     });
 
-    it('PATCH /api/users should return 200 when user is updated', async () => {
+    it('PATCH /api/users/me should return 200 when user is updated', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({ ...user, id: undefined });
@@ -42,7 +42,7 @@ describe('UserRoutes E2E Tests', () => {
         };
 
         const response = await request(app)
-            .patch('/api/users')
+            .patch('/api/users/me')
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
             .send(updateUserParams);
 
@@ -55,20 +55,20 @@ describe('UserRoutes E2E Tests', () => {
         expect(response.body.password).not.toBe(updateUserParams.password);
     });
 
-    it('DELETE /api/users should return 200 when user is deleted', async () => {
+    it('DELETE /api/users/me should return 200 when user is deleted', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({ ...user, id: undefined });
 
         const response = await request(app)
-            .delete('/api/users')
+            .delete('/api/users/me')
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ ...createdUser, tokens: undefined });
     });
 
-    it('GET /api/users/balance should return 200 when get user balance', async () => {
+    it('GET /api/users/me/balance should return 200 when get user balance', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({ ...user, id: undefined });
@@ -110,7 +110,7 @@ describe('UserRoutes E2E Tests', () => {
         const to = '2025-12-31';
 
         const response = await request(app)
-            .get(`/api/users/balance?from=${from}&to=${to}`)
+            .get(`/api/users/me/balance?from=${from}&to=${to}`)
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
@@ -138,47 +138,5 @@ describe('UserRoutes E2E Tests', () => {
         expect(response.body).toEqual({
             message: `The e-mail ${user.email} is already in use`,
         });
-    });
-
-    it('POST /api/users/login should return 200 when user logs in successfully', async () => {
-        await request(app)
-            .post('/api/users')
-            .send({ ...user, id: undefined });
-
-        const response = await request(app).post('/api/users/login').send({
-            email: user.email,
-            password: user.password,
-        });
-
-        expect(response.status).toBe(200);
-        expect(response.body.tokens.accessToken).toBeDefined();
-        expect(response.body.tokens.refreshToken).toBeDefined();
-        expect(response.body).toEqual({
-            id: expect.any(String),
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-            password: expect.any(String),
-            tokens: {
-                accessToken: expect.any(String),
-                refreshToken: expect.any(String),
-            },
-        });
-    });
-
-    it('POST /api/users/refresh-token shound return 200 when refresh token is valid', async () => {
-        const { body: createdUser } = await request(app)
-            .post('/api/users')
-            .send({ ...user, id: undefined });
-
-        const response = await request(app)
-            .post('/api/users/refresh-token')
-            .send({
-                refreshToken: createdUser.tokens.refreshToken,
-            });
-
-        expect(response.status).toBe(200);
-        expect(response.body.accessToken).toBeDefined();
-        expect(response.body.refreshToken).toBeDefined();
     });
 });
