@@ -9,7 +9,7 @@ import { Router } from 'express';
 
 export const transactionsRouter = Router();
 
-transactionsRouter.post('/', auth, async (request, response) => {
+transactionsRouter.post('/me', auth, async (request, response) => {
     const createTransactionController = makeCreateTransactionController();
 
     const { statusCode, body } = await createTransactionController.execute({
@@ -20,7 +20,7 @@ transactionsRouter.post('/', auth, async (request, response) => {
     response.status(statusCode).send(body);
 });
 
-transactionsRouter.get('/', auth, async (request, response) => {
+transactionsRouter.get('/me', auth, async (request, response) => {
     const getTransactionsByUserIdController =
         makeGetTransactionsByIdController();
 
@@ -33,25 +33,31 @@ transactionsRouter.get('/', auth, async (request, response) => {
     response.status(statusCode).send(body);
 });
 
-transactionsRouter.patch('/:transactionId', auth, async (request, response) => {
-    const updateTransactionController = makeUpdateTransactionController();
+transactionsRouter.patch(
+    '/me/:transactionId',
+    auth,
+    async (request, response) => {
+        const updateTransactionController = makeUpdateTransactionController();
 
-    const { statusCode, body } = await updateTransactionController.execute({
-        ...request,
-        params: { ...request.params, userId: request.userId },
-    });
+        const { statusCode, body } = await updateTransactionController.execute({
+            ...request,
+            params: { ...request.params, userId: request.userId },
+        });
 
-    response.status(statusCode).send(body);
-});
+        response.status(statusCode).send(body);
+    },
+);
 
 transactionsRouter.delete(
-    '/:transactionId',
+    '/me/:transactionId',
     auth,
     async (request, response) => {
         const deleteTransactionController = makeDeleteTransactionController();
 
-        const { statusCode, body } =
-            await deleteTransactionController.execute(request);
+        const { statusCode, body } = await deleteTransactionController.execute({
+            ...request,
+            userId: request.userId,
+        });
 
         response.status(statusCode).send(body);
     },
