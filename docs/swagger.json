@@ -586,19 +586,31 @@
             "properties": {
                 "earnings": {
                     "type": "string",
-                    "example": "1000"
+                    "example": "5000"
                 },
                 "expenses:": {
                     "type": "string",
-                    "example": "200"
+                    "example": "2000"
                 },
                 "investments": {
                     "type": "string",
-                    "example": "300"
+                    "example": "1000"
                 },
                 "balance": {
                     "type": "string",
                     "example": "500"
+                },
+                "earningsPercentage": {
+                    "type": "string",
+                    "example": "62"
+                },
+                "expensesPercentage": {
+                    "type": "string",
+                    "example": "25"
+                },
+                "investmentsPercentage": {
+                    "type": "string",
+                    "example": "12"
                 }
             }
         },
