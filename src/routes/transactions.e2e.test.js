@@ -73,10 +73,15 @@ describe('TransactionsRoutes E2E Tests', () => {
             .post('/api/users')
             .send({ ...user, id: undefined });
 
+        const deleteTransactionWithoutId = {
+            ...transactionWithoutId,
+            userId: createdUser.id,
+        };
+
         const { body: createdTransaction } = await request(app)
             .post('/api/transactions/me')
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
-            .send(transactionWithoutId);
+            .send(deleteTransactionWithoutId);
 
         const response = await request(app)
             .delete(`/api/transactions/me/${createdTransaction.id}`)

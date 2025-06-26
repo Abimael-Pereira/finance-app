@@ -1,4 +1,4 @@
-import { TransactionNotFoundError } from '../../errors/';
+import { ForbiddenError, TransactionNotFoundError } from '../../errors/';
 import { faker } from '@faker-js/faker';
 import { DeleteTransactionController } from './delete-transaction';
 import { transaction } from '../../tests/index.js';
@@ -7,6 +7,7 @@ describe('DeleteTransaction', () => {
     const httpRequest = {
         params: {
             transactionId: faker.string.uuid(),
+            userId: faker.string.uuid(),
         },
         body: {
             transaction,
@@ -50,8 +51,22 @@ describe('DeleteTransaction', () => {
         });
 
         expect(result.statusCode).toBe(400);
+        expect(result.body).toEqual('Transaction ID must be a valid UUID');
+    });
+
+    it('should return 403 when user is not authorized to delete the transaction', async () => {
+        const { deleteTransactionControler, deleteTransactionUseCase } =
+            makeSut();
+
+        jest.spyOn(deleteTransactionUseCase, 'execute').mockRejectedValueOnce(
+            new ForbiddenError(),
+        );
+
+        const result = await deleteTransactionControler.execute(httpRequest);
+
+        expect(result.statusCode).toBe(403);
         expect(result.body).toEqual({
-            message: 'The provided id is not valid',
+            message: 'Forbidden',
         });
     });
 
@@ -97,6 +112,7 @@ describe('DeleteTransaction', () => {
 
         expect(executeSpy).toHaveBeenCalledWith(
             httpRequest.params.transactionId,
+            httpRequest.params.userId,
         );
     });
 });

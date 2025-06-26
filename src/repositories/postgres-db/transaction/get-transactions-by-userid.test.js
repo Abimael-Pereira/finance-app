@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import dayjsPluginUTC from 'dayjs-plugin-utc';
 import { prisma } from '../../../../prisma/prisma';
-import { transaction, user as fakeUser } from '../../../tests/';
+import { transaction, user } from '../../../tests/';
 import { PostgresGetTransactionsByUserIdRepository } from './get-transactions-by-userid';
 
 dayjs.extend(dayjsPluginUTC);
@@ -11,14 +11,14 @@ describe('GetTransactionsByUserId', () => {
     const to = '2025-12-31';
 
     it('should get transactions by user id on db', async () => {
-        await prisma.user.create({ data: fakeUser });
+        await prisma.user.create({ data: user });
         await prisma.transaction.create({
-            data: { ...transaction, userId: fakeUser.id },
+            data: { ...transaction, userId: user.id },
         });
 
         const sut = new PostgresGetTransactionsByUserIdRepository();
 
-        const result = await sut.execute(fakeUser.id, from, to);
+        const result = await sut.execute(user.id, from, to);
 
         console.log(result);
 
@@ -29,7 +29,7 @@ describe('GetTransactionsByUserId', () => {
         }).toStrictEqual({
             ...transaction,
             amount: transaction.amount.toString(),
-            userId: fakeUser.id,
+            userId: user.id,
             date: undefined,
         });
         expect(dayjs.utc(result[0].date).format('YYYY-MM-DD')).toBe(
@@ -42,11 +42,11 @@ describe('GetTransactionsByUserId', () => {
 
         const prismaSpy = jest.spyOn(prisma.transaction, 'findMany');
 
-        await sut.execute(fakeUser.id, from, to);
+        await sut.execute(user.id, from, to);
 
         expect(prismaSpy).toHaveBeenCalledWith({
             where: {
-                userId: fakeUser.id,
+                userId: user.id,
                 date: {
                     gte: new Date(from),
                     lte: new Date(to),
@@ -62,7 +62,7 @@ describe('GetTransactionsByUserId', () => {
             new Error(),
         );
 
-        const result = sut.execute(fakeUser.id);
+        const result = sut.execute(user.id);
 
         await expect(result).rejects.toThrow();
     });
