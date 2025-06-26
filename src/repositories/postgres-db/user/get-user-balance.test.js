@@ -5,6 +5,9 @@ import { faker } from '@faker-js/faker';
 import { TransactionType } from '@prisma/client';
 
 describe('GetUserBalanceRepository', () => {
+    const from = '2025-01-01';
+    const to = '2025-12-31';
+
     it('should get user balance on db', async () => {
         await prisma.user.create({ data: fakeUser });
 
@@ -57,7 +60,7 @@ describe('GetUserBalanceRepository', () => {
 
         const sut = new PostgresGetUserBalanceRepository();
 
-        const result = await sut.execute(fakeUser.id);
+        const result = await sut.execute(fakeUser.id, from, to);
 
         expect(result.earnings.toString()).toBe('10000');
         expect(result.expenses.toString()).toBe('2000');
@@ -68,15 +71,23 @@ describe('GetUserBalanceRepository', () => {
     it('should call Prisma with correct params', async () => {
         const sut = new PostgresGetUserBalanceRepository();
 
+        const dateFilter = {
+            date: {
+                gte: new Date(from),
+                lte: new Date(to),
+            },
+        };
+
         const prismaSpy = jest.spyOn(prisma.transaction, 'aggregate');
 
-        await sut.execute(fakeUser.id);
+        await sut.execute(fakeUser.id, from, to);
 
         expect(prismaSpy).toHaveBeenCalledTimes(3);
         expect(prismaSpy).toHaveBeenCalledWith({
             where: {
                 userId: fakeUser.id,
                 type: TransactionType.EXPENSE,
+                ...dateFilter,
             },
             _sum: {
                 amount: true,
@@ -86,6 +97,7 @@ describe('GetUserBalanceRepository', () => {
             where: {
                 userId: fakeUser.id,
                 type: TransactionType.EXPENSE,
+                ...dateFilter,
             },
             _sum: {
                 amount: true,
@@ -95,6 +107,7 @@ describe('GetUserBalanceRepository', () => {
             where: {
                 userId: fakeUser.id,
                 type: TransactionType.INVESTMENT,
+                ...dateFilter,
             },
             _sum: {
                 amount: true,
@@ -109,7 +122,7 @@ describe('GetUserBalanceRepository', () => {
             new Error(),
         );
 
-        const promisse = sut.execute(fakeUser.id);
+        const promisse = sut.execute(fakeUser.id, from, to);
 
         await expect(promisse).rejects.toThrow();
     });
