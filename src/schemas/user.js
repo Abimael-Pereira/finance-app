@@ -89,3 +89,42 @@ export const refreshTokenSchema = z.object({
             message: 'Refresh token is required.',
         }),
 });
+
+export const getUserBalanceSchema = z
+    .object({
+        userId: z
+            .string({
+                required_error: 'User ID is required.',
+                invalid_type_error: 'User ID must be a string.',
+            })
+            .uuid({
+                message: 'User ID must be a valid UUID.',
+            }),
+        from: z
+            .string({
+                required_error: 'From date is required.',
+                invalid_type_error: 'From date must be a string.',
+            })
+            .date({
+                message: 'From date must be a valid date string.',
+            }),
+        to: z
+            .string({
+                required_error: 'To date is required.',
+                invalid_type_error: 'To date must be a string.',
+            })
+            .date({
+                message: 'To date must be a valid date string.',
+            }),
+    })
+    .refine(
+        (data) => {
+            if (data.from && data.to) {
+                return new Date(data.from) <= new Date(data.to);
+            }
+            return true;
+        },
+        {
+            message: 'From date must be earlier than or equal to To date.',
+        },
+    );

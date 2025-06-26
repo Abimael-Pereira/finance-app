@@ -24,18 +24,14 @@ usersRouter.get('/', auth, async (request, response) => {
 
 usersRouter.get('/balance', auth, async (request, response) => {
     const getUserBalanceController = makeGetUserBalanceController();
-    const { statusCode, body } = await getUserBalanceController.execute(
-        {
-            ...request,
-            params: { userId: request.userId },
+    const { statusCode, body } = await getUserBalanceController.execute({
+        ...request,
+        params: { userId: request.userId },
+        query: {
+            from: request.query.from,
+            to: request.query.to,
         },
-        {
-            query: {
-                from: request.query.from,
-                to: request.query.to,
-            },
-        },
-    );
+    });
 
     response.status(statusCode).send(body);
 });
