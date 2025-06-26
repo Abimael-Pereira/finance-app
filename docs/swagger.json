@@ -53,7 +53,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/api/users/me": {
             "get": {
                 "summary": "Get authenticaded user",
                 "tags": ["Users"],
@@ -158,7 +160,7 @@
                 ]
             }
         },
-        "/api/users/login": {
+        "/api/auth/login": {
             "post": {
                 "summary": "Login User",
                 "tags": ["Users"],
@@ -194,7 +196,7 @@
                 }
             }
         },
-        "/api/users/refresh-token": {
+        "/api/auth/refresh-token": {
             "post": {
                 "summary": "Refresh User Token",
                 "tags": ["Users"],
@@ -230,7 +232,7 @@
                 }
             }
         },
-        "/api/users/balance": {
+        "/api/users/me/balance": {
             "get": {
                 "summary": "Get user balance by authenticated user ID",
                 "tags": ["Users"],
