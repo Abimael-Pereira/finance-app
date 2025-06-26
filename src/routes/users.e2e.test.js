@@ -106,8 +106,11 @@ describe('UserRoutes E2E Tests', () => {
                 amount: 1000,
             });
 
+        const from = '2025-01-01';
+        const to = '2025-12-31';
+
         const response = await request(app)
-            .get('/api/users/balance')
+            .get(`/api/users/balance?from=${from}&to=${to}`)
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`);
 
         expect(response.status).toBe(200);
