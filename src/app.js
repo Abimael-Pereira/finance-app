@@ -3,6 +3,7 @@ import { usersRouter, transactionsRouter, authRouter } from './routes/index.js';
 import swaggerUi from 'swagger-ui-express';
 import fs from 'fs';
 import path from 'path';
+import cors from 'cors';
 
 const swaggerDocument = JSON.parse(
     fs.readFileSync(
@@ -12,6 +13,8 @@ const swaggerDocument = JSON.parse(
 );
 
 export const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
